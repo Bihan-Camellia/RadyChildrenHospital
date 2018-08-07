@@ -1,0 +1,211 @@
+---
+title: "Flow Time Analysis"
+output: 
+ html_document: 
+    theme: spacelab
+    df_print: paged
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning =FALSE)
+
+library(tidyverse)
+library(lubridate)
+library(stringr)
+```
+
+```{r}
+encounters <- read_csv("/srv/rsdata/UCSD_F_ED_ENCOUNTERS.csv",
+                       col_types = cols(ADT_ARRIVAL_DATE = col_date(format = "%m/%d/%Y"),
+                                        ADT_ARRIVAL_DTTM = col_datetime(format = "%m/%d/%Y %H:%M"),
+                                        ED_DEPARTURE_DTTM = col_datetime(format = "%m/%d/%Y %H:%M"),
+                                        ED_DISPOSITION_DTTM = col_datetime(format = "%m/%d/%Y %H:%M"),
+                                        EMERGENCY_ADMISSION_DTTM = col_datetime(format = "%m/%d/%Y %H:%M"),
+                                        HOSPITAL_ADMISSION_DTTM = col_datetime(format = "%m/%d/%Y %H:%M"),
+                                        HOSPITAL_DISCHARGE_DATE = col_date(format = "%m/%d/%Y"),
+                                        HOSPITAL_DISCHARGE_DTTM = col_datetime(format = "%m/%d/%Y %H:%M"),
+                                        UPDATE_DATE = col_datetime(format = "%m/%d/%Y %H:%M")))
+
+encounters <- bind_rows(
+  encounters %>% filter(ED_OR_UC_DEPARTMENT == 'EMERGENCY'),
+  encounters %>% filter(ED_OR_UC_DEPARTMENT == 'Kiswahili') %>% 
+    mutate(LANGUAGE = paste(LANGUAGE, ED_OR_UC_DEPARTMENT, sep = '/'),
+           ED_OR_UC_DEPARTMENT = BEHAVIORAL_DASHB,
+           BEHAVIORAL_DASHB = as.integer(X77)),
+  encounters %>% filter(ED_OR_UC_DEPARTMENT == 'English') %>% 
+    mutate(FINANCIAL_CLASS_NAME = PATIENT_SEX,
+           PATIENT_SEX = LANGUAGE,
+           LANGUAGE = ED_OR_UC_DEPARTMENT,
+           ED_OR_UC_DEPARTMENT = BEHAVIORAL_DASHB,
+           BEHAVIORAL_DASHB = as.integer(X77))
+) %>% 
+  select(-X77)
+
+
+events <- read_delim("/srv/rsdata/UCSD_ED_EVENTS.csv",
+                     ";",
+                     escape_double = FALSE,
+                     col_types = cols(ADT_ARRIVAL_DTTM = col_datetime(format = "%m/%d/%Y %H:%M"),
+                                      EVENT_TIME = col_datetime(format = "%m/%d/%Y %H:%M")),
+                     trim_ws = TRUE)
+
+# adtLocation <- read_delim("/srv/rsdata/UCSD_ED_ADT_LOCATION.csv",
+#                           ";",
+#                           escape_double = FALSE,
+#                           col_types = cols(ADT_ARRIVAL_DTTM = col_datetime(format = "%m/%d/%Y %H:%M"),
+#                                            IN_DTTM = col_datetime(format = "%m/%d/%Y %H:%M"),
+#                                            OUT_DTTM = col_datetime(format = "%m/%d/%Y %H:%M")),
+#                           trim_ws = TRUE)
+
+
+# diagnosis <- read_delim("/srv/rsdata/UCSD_ED_ENCOUNTER_DIAG.csv",
+#                         ";",
+#                         escape_double = FALSE, col_types = cols(ADT_ARRIVAL_DTTM = col_datetime(format = "%m/%d/%Y %H:%M")),
+#                         trim_ws = TRUE)
+# 
+# chiefComplaint <- read_delim("/srv/rsdata/UCSD_ED_CHIEF_COMPLAINT.csv",
+#                              ";",
+#                              escape_double = FALSE,
+#                              col_types = cols(ADT_ARRIVAL_DTTM = col_datetime(format = "%m/%d/%Y %H:%M")),
+#                              trim_ws = TRUE)
+
+useful <- encounters %>% select(PAT_ENC_CSN_ID)
+
+
+df <- events %>% 
+  filter(EVENT_NAME == 'Patient departed from ED'| EVENT_NAME == 'Patient arrived in ED' | EVENT_NAME == 'Patient roomed in ED') %>% 
+  select(PAT_ENC_CSN_ID, EVENT_NAME, EVENT_TIME) %>% 
+  group_by(PAT_ENC_CSN_ID, EVENT_NAME) %>% 
+  mutate(ind = row_number()) %>% 
+  spread(EVENT_NAME, EVENT_TIME) %>% 
+  select(-ind) %>% 
+  rename(arrival = `Patient arrived in ED`,
+         depart = `Patient departed from ED`,
+         room = `Patient roomed in ED`) %>% 
+  inner_join(encounters, by = 'PAT_ENC_CSN_ID') %>% 
+  ungroup()
+
+df_wrk <- df %>% 
+  select(PAT_ENC_CSN_ID, 
+         ADT_ARRIVAL_DTTM,
+         arrival, 
+         depart, 
+         room,
+         AGE_AT_ARRIVAL_MONTHS, 
+         ACUITY_LEVEL_C, 
+         MEANS_OF_ARRIVAL, 
+         FIRST_CHIEF_COMPLAINT, 
+         FINANCIAL_CLASS_NAME,
+         LANGUAGE, PATIENT_SEX,
+         BEHAVIORAL_DASHB) %>% 
+  mutate(arrival = as_datetime(ifelse(is.na(arrival) & !is.na(ADT_ARRIVAL_DTTM), ADT_ARRIVAL_DTTM, arrival))) %>% 
+  mutate(weekdays = factor(wday(arrival),
+                               labels = c('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday')),
+         month = factor(month(arrival),
+                            labels = c('January','February','March','April','May','June','July','August','September','October','November','December')),
+         year = factor(year(arrival)),
+         hour = factor(hour(arrival)),
+         ACUITY_LEVEL_C = factor(ifelse(ACUITY_LEVEL_C %in% c('1','2','3','4','5'), ACUITY_LEVEL_C, 'Others'),
+                                 levels = c('Others','5','4','3','2','1')),
+         BEHAVIORAL_DASHB = as.logical(BEHAVIORAL_DASHB)) %>% 
+  rename(patient = PAT_ENC_CSN_ID, 
+         acuity = ACUITY_LEVEL_C, 
+         behavioral = BEHAVIORAL_DASHB,
+         ageInMonth = AGE_AT_ARRIVAL_MONTHS,
+         meansOfArrival = MEANS_OF_ARRIVAL,
+         complaint = FIRST_CHIEF_COMPLAINT,
+         class = FINANCIAL_CLASS_NAME,
+         language = LANGUAGE,
+         gender = PATIENT_SEX) %>% 
+  filter(!is.na(depart)) %>% 
+  mutate(totalTime = as.numeric(depart - arrival) / 60,
+         waitTime = as.numeric(room - arrival) / 60) %>% 
+  filter(totalTime > 0)
+
+```
+
+
+```{r}
+p1 <- df_wrk %>%
+  ggplot(aes(x = year, y = totalTime)) +
+  geom_boxplot() +
+  facet_wrap(~behavioral) +
+  labs(x = NULL, y = 'Minutes spent in ED') +
+  theme_bw()
+p1
+```
+
+```{r}
+p2 <- df_wrk %>% 
+  ggplot(aes(x = weekdays, y = totalTime)) +
+  geom_boxplot() +
+  facet_wrap(~behavioral) +
+  labs(x = NULL, y = 'Minutes spent in ED') +
+  theme_bw() +
+  coord_cartesian(ylim = c(0,8000))
+
+p2
+```
+
+
+```{r}
+p3 <- df_wrk %>% filter(behavioral == T, year != 2018) %>% 
+  group_by(year, month) %>% 
+  summarise(n = n()) %>% 
+  ggplot(aes(x = month, y = n)) +
+  geom_col() +
+  labs(x = NULL, y = NULL) +
+  facet_grid(year~.) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle=90, hjust=1))
+p3
+
+```
+
+```{r}
+p4 <- df_wrk %>% filter(behavioral == T, year != 2018) %>% 
+  group_by(year, hour) %>% 
+  summarise(n = n()) %>% 
+  ggplot(aes(x = hour, y = n)) +
+  geom_col() +
+  labs(x = NULL, y = NULL) +
+  facet_grid(year~.) +
+  theme_bw()
+
+p4
+
+df_wrk %>% filter(year != 2018) %>% 
+  group_by(year, hour) %>% 
+  summarise(avgF = mean(totalTime),
+            avgW = mean(waitTime, na.rm=T)) %>% 
+  ggplot(aes(x = hour)) +
+  geom_col(aes(y = avgF), show.legend = FALSE) +
+  geom_errorbar(aes(ymin=avgW, ymax = avgW))+
+  labs(x = NULL, y = NULL) +
+  facet_grid(year~.) +
+  theme_bw() +
+  scale_fill_brewer(palette = 'Dark2')
+
+  # # gather(key = type, value = value, -year, -hour) %>% 
+  # ggplot(aes(x = hour, y = value, fill = type)) +
+  # geom_col(show.legend = FALSE) +
+  # labs(x = NULL, y = NULL) +
+  # facet_grid(year~.) +
+  # theme_bw() +
+  # scale_fill_brewer(palette = 'Dark2')
+
+```
+```{r}
+p5 <- df_wrk %>% filter(behavioral == T, year != 2018) %>% 
+  group_by(year, weekdays) %>% 
+  summarise(n = n()) %>% 
+  ggplot(aes(x = weekdays, y = n)) +
+  geom_col() +
+  labs(x = NULL, y = NULL) +
+  facet_grid(.~year) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle=90, hjust=1))
+p5
+```

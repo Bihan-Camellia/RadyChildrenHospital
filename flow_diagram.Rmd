@@ -1,0 +1,61 @@
+---
+title: "flow_diagram"
+date: "5/6/2018"
+output: html_document
+---
+
+
+# Patient Flow of Care
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("DiagrammeR")
+# Must build in option to install packages only if they are not already installed
+# Sample code for this can be found in Professor Kanishka's sample code
+# install.packages("DiagrammeR")
+```
+
+It is important to understand patient flow of care in order to assess the flow rates of different processes within Rady Children's Hospital. This will provide a better overall picture for where patients go and where they may spend the majority of their time during the care process in the Emergency Department. 
+
+Items which are darker green indicate that a timestamp is typically recorded when a given patient begins the specified process. Diamonds indicate that a decision is made 
+
+## Patient Flow Diagram for Emergency Department
+
+
+```{r flow_diagram, fig.height = 2, fig.width = 10, fig.align = "center", echo = FALSE}
+
+flow <- DiagrammeR("
+graph LR
+A(ED Arrival) -->B{Registration}
+B-->C(Initial Assessment)
+C-->D(Room Assigned)
+B-->D
+D-->E(Nurse/Physician Assessment)
+E-->F{Diagnosis & Treatment}
+F-->G(Supervision)
+F-->H(ED Discharge)
+G-->H
+style A fill:#87AB51 
+style B fill:#3C8937
+style C fill:#87AB51
+style D fill:#3C8937
+style E fill:#3C8937
+style F fill:#87AB51
+style G fill:#87AB51
+style H fill:#3C8937
+"
+)
+
+flow
+
+# There must be Items after decisions to indicate
+# Registration: 'Busy' or 'Not Busy'
+# Diagnosis & Treatment: 'Behavioral Patient' or 'Not Behavioral Patient'
+
+```
+
+Patients will typicaly be escorted in by a parent or law enforcement official (more common for Behavioral Patients) in front of the ED center. Upon arrival, patients will wait in line to check in. If the patient (or family) leaves before Registration and does not obtain a time stamp for checking in, there is no record of the patient visiting the ED. This may occur more often due to long lines and unappealing wait times. If the patient leaves the facility after Registration without being seen by a doctor, the LWBS rate (Left Without Being Seen) will increase. RCH aims to maintain a low or zero percent LWBS rate while continuing to provide high quality care to as many patients as possible. 
+
+Initial assessment would be performed by the nurse adjacent to the waiting room area if there is a longer wait time and limited bed availability. If beds are open and the ED is not busy, patients are escorted to a room where they may wait instead of waiting in the lobby. Once the room is assigned, the patient typically stays in the room until their diagnosis and treatment are completed. Upon a room being assigned, a Triage Nurse usually comes in for further assessment before bringing in at least one physician to provide an accurate diagnosis, give treatment, and write any prescriptions if needed. 
+
+Patients stay in their beds until they are ready to be discharged. Behavioral patients tend to stay longer until their situation is stabilized, which may take 24 hours depending on that particular scenario. After a good nights rest and medical consultation, many of these patients can be discharged after a good night's rest. Once the patient has received complete care, RCH can release and discharge the patient. 
