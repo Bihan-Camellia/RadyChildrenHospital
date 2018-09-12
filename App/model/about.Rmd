@@ -1,0 +1,310 @@
+---
+title: "About"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+### App User Guidline:
+
+1.`Dataset Analysis` panel: 
+
+  * `Patient Volume`: You can monitor recent daily patient volume; weekly and monthly patient volume and acuity level analysis.
+  
+  * `Behaviroal Patient`: You can monitor recent behaviroal patient volume; weekly and monthly behaviroal patient volume analysis.
+
+2.`Model` panel:
+
+  * `RCH Model`: You can input how many number physician you want to schedule for each location and each hour, the app will automatically generate a bar plot to show the gaps between estimated demand and your scheduled capacity based on RCH's exisiting model.
+  
+  * `Linear Model`: You can input how many number physician you want to schedule for each location and each hour, the app will automatically generate a bar plot to show the gaps between estimated demand and your scheduled capacity based on a linear model that considered more data than historical patient volume.
+  
+
+***
+
+### Methodology
+
+#### RCH Model
+
+**4 major components are considered in the current model:**
+
+  * **Season:** *High, Medium, Low Demand Season* (Based on their understanding of average daily patient volume)
+  
+  * **Weekday:** *Sun/Mon, Tue-Sat* (Assuming Sunday and Monday have more patients than that of the other days of week)
+  
+  * **Acuities:** *Acuities1-2-3, Acuities4-5* (Industrial agreement of treating throughput: 2.15 pts/hour for acuities1-2-3, and 3.00 pts/hour for acuities4-5)
+  
+  * **Historical Volume** *75th percentile* of the patient volumes for a specific hour given season, weekday and acuitites (Estimated by tradeoffs between cost and benefits)
+
+`smooth` represents `Patient Arrivals Estimate`, is calculated as follows:
+
+  * 24 hours are smoothed by 8 3-hour groups, (0-2, 3-5, etc.).
+  * Average three 75th percentile patient volumes and use the average number for all hours within each 3-hour group.
+
+`staffingNeed` is calculated as follows:
+  
+  * current hour cell denote as $h_0$, 
+  * select the maximum `Patient Arrivals Estimate` among $h_0$, $h_{-1}$, and $h_{-2}$
+  * divide the maximum by the common throughput by acuities
+
+  
+#### Linear Model
+
+Through exploratory data analysis, we know the pattern hourly patient arrival volume can be detect by the feature of the date itself, such as weeknumber, month, day, flu season and weekday, etc. 
+
+Also, the hourly patient volume also have relationship with daily patient volume. In other words, each hour occupies a certain percentage of the daily patient volume. 
+
+Additionally, the cdc_positive_percentage is a strong indicator of the flu condition at that date. Since high season and low season has different hourly patient volume pattern, we would like to include it in our linear regression model.
+
+$$\text{hourly patient volume}= \beta_1*\text{hour}+ β_2*\text{week number}+ β_3* \text{season}+ β_4* \text{weekday}+ \\ β_5* \text{month}+β_6*\text{day}+ β_7*\text{highlow}+β_8*\text{daily patient volume}+β_9*\text{cdc positive percentage}$$
+
+The linear model requires two variables that are not known when prediction. So we have to predict these two first using ARIMA model before we jump into linear regression model.
+
+$$Cdc.Positive.Percentage_t \sim ARIMA(p,d,q)$$
+
+$$Daily.Patient.Volume_t \sim ARIMA(p,d,q)$$
+
+
+***
+
+### Data sources
+
+1. Rady Children's Hospital EPIC system (Internal Data)
+2. [CDC Flu Data](https://www.cdc.gov/flu/index.htm)
+
+***
+
+### Data summaries
+
+Simulated data set:
+
+```{r echo = FALSE}
+fEncounters <- data.frame("PAT_ENC_CSN_ID" = c(11111111,22222222),
+                          "UPDATE_DATE" = c("2018-04-17 01:42:00", "2018-04-23 00:56:00"),
+                          "ED_EPISODE_ID" = c(123456, 789101),
+                          "PAT_ID" = c(242526,27282930),
+                          "AGE_AT_ARRIVAL_YEARS" = c(10, 11), 
+                          "AGE_AT_ARRIVAL_MONTHS" = c(123, 136),
+                          "ENC_ADDRESS_LINE" = c(1,2),
+                          "ADT_ARRIVAL_DATE" = c("2016-05-22", "2017-12-21"),
+                          "ADT_ARRIVAL_DTTM" = c("2016-05-22 00:47:00", "2017-12-21 00:56:00"),
+                          "MEANS_OF_ARRIVAL_C" = c(5,7),
+                          "AMBULANCE_CODE_C" = c("null", "null"),
+                          "PRIVATE_HOSPITAL_ENC_C" = c(3,5),
+                          "DISASTER_NUM" = c("null", "null"),
+                          "ACUITY_LEVEL_C"=c(3,4),
+                          "HOSPITAL_ADMISSION_DTTM"= c("2016-05-22 11:02:00", "2017-12-21 18:05:00"),
+                          "ADMISSION_EVENT_ID"=c(1234,2345),
+                          "EMERGENCY_ADMISSION_DTTM" = c("2016-05-22 11:02:00", "2017-12-21 18:05:00"),
+                          "EMERGENCY_ADMISSION_EVENT_ID"  =c(2345,3456),
+                          "FIRST_CHIEF_COMPLAINT_ID" =  c(242526,27282930),
+                          "FIRST_CHIEF_COMPLAINT_OTHER" = c("null", "null"),
+                          "NUM_CHIEF_COMPLAINTS_ENC"  = c(1, 2),
+                          "ED_DISPOSITION_C" = c(1,1),
+                          "ED_DISPOSITION_DTTM" = c("2016-05-22 11:51:00", "2017-12-21 22:04:00"),
+                          "ED_DISPOSITION_PAT_CONDITION_C" = c("null", "null"),
+                          "PRIMARY_DX_ID" = c(38575,19475),
+                          "PRIMARY_DX_LINE"  = c(1,1),
+                          "PRIMARY_DX_ED_YN"  = c("Y","Y") ,
+                          "NUM_DX_ENC" =c(4.2),
+                          "NUM_ED_DX_ENC" =c(1,4),
+                          "ED_DEPARTURE_DTTM" = c("2016-05-22 12:05:00", "2017-12-21 22:30:00"),
+                          "ED_PRIMARY_CARE_AREA_ID" = c(2,4),
+                          "FIRST_EMERGENCY_DEPARTMENT_ID" =c(23049,230984),
+                          "LAST_EMERGENCY_DEPARTMENT_ID" = c(928374,921234),
+                          "HOSPITAL_DISCHARGE_DATE" = c("2016-05-22", "2017-12-21"),
+                          "HOSPITAL_DISCHARGE_DTTM" = c("2016-05-22 12:05:00", "2017-12-21 22:30:00"),      
+                          "DISCHARGE_EVENT_ID"  =c(23049,230984),
+                          "LAST_DEPARTMENT_ID" = c(928374,921234),
+                          "ADT_SERVICE_AREA_ID" = c(924374,925234),
+                          "DISCHARGE_DISPOSITION_C" =c(2,2),    
+                          "DISCHARGE_DESTINATION_C" =c("null", "null"),
+                          "INPATIENT_ADMISSION_DTTM" =c("2016-05-22 12:05:00", "2017-12-21 22:30:00"),
+                          "INPATIENT_ADMISSION_EVENT_ID"  = c(924374,925234),
+                          "INPATIENT_PAT_ENC_CSN_ID" = c(924374,925234),
+                          "PREV_HSP_PAT_ENC_CSN_ID" = c(924374,925234),
+                          "PREV_HSP_ENC_ED_YN"  = c("Y","Y") ,
+                          "PREV_HSP_ENC_INPATIENT_YN"  = c("Y","Y") ,
+                          "PREV_HSP_ENC_DATEDIFF" =c("null", "null"),
+                          "PREV_HSP_ENC_HOURDIFF" =c("null", "null"),
+                          "HOSPITAL_ACCOUNT_ID" = c(924374,925234),
+                          "PCP_AT_ENC_PROV_ID" = c(924374,925234),
+                          "FIRST_ED_ATTEND_PROV_ID"  = c(924374,925234),
+                          "LAST_ED_ATTEND_PROV_ID" = c(924374,925234),
+                          "LONGEST_ED_ATTEND_PROV_ID"  = c(924374,925234),
+                          "LOA_PAT_ENC_CSN_ID"   = c(924374,925234),
+                          "LOA_LINE" =c("null", "null"),
+                          "MEANS_OF_ARRIVAL"  =c("null", "Ambulance"), 
+                          "AMBULANCE_CODE" = c("null", "null"),
+                          "PRIVATE_HOSP_ENC" = c("no", "no"),
+                          "ACUITY" = c("Urgent","Emergent"), 
+                          "FIRST_CHIEF_COMPLAINT" =c("ALLERGIC REACTION", "ALLERGIC REACTION"),
+                          "ED_DISPOSITION" =c("Discharged","Discharged"),
+                          "PRIMARY_DX" =c("Food allergy", "Food allergy"),
+                          "ED_PRIMARY_CARE_AREA"  =c("hospital", "hospital"),
+                          "FIRST_ED_DEPARTMENT" =c("Emergency", "Emergency"),
+                         "LAST_DEPARTMENT" =c("Emergency", "Emergency"),
+                         "DISCHARGE_DISPOSITION"  =c("Home or Self Care", "Home or Self Care"),
+                         "DISCHARGE_DESTINATION" =c("null", "null"),
+                         "PCP_AT_TIME_OF_ENC" =c("Carty Amy", "Hok Zhu"),
+                         "FIRST_ED_ATTENDING_PROV" =c("Excellent A", "Excellent B"),
+                         "LAST_ED_ATTENDING_PROV"  =c("Excellent A", "Excellent B"),
+                         "LONGEST_ED_ATTENDING_PROV" =c("Excellent A", "Excellent B"),
+                         "FINANCIAL_CLASS_NAME" =c("Commercial","Medi-Cal"),
+                         "PATIENT_SEX" =c("female", "male"),
+                         "LANGUAGE" =c("english", "english"),
+                         "ED_OR_UC_DEPARTMENT" = c("ED", "UC"),
+                         "BEHAVIORAL_DASHB"  =c(1,0))
+
+events <- data.frame( "PAT_ENC_CSN_ID" = c(11111111,22222222),
+                      "ADT_ARRIVAL_DTTM" = c("2016-05-22 00:47:00", "2017-12-21 00:56:00"),
+                      "LAST_DEPARTMENT_ID" = c(928374,921234),
+                      "LINE" = c(1,2),
+                      "EVENT_TYPE" = c(58,56),
+                      "EVENT_DISPLAY_NAME" = c("Patient arrived in ED", "Triage Completed"),
+                      "EVENT_NAME" = c("Patient arrived in ED", "Triage Completed"),
+                      "EVENT_TIME" =c("01/01/2014 00:14", "01/01/2014 00:14"),
+                      "EVENT_USER_ID" = c(928374,921234),
+                      "PROV_NAME" = c("Excellent A", "Excellent B"),
+                      "PROV_TYPE" =c("Licensed Vocational Nurse","Registered Nurse"),
+                      "CLINICIAN_TITLE" =c("LVN/LPN", "RN"),
+                      "EVENT_CMT"= c("null","null"),
+                      "EVENT_DEPT_ID"=c(1010101,2020220),
+                      "DEPARTMENT_NAME"=c("EMERGENCY","EMERGENCY"),
+                      "EVENT_STATUS_C"=c("null","null"),
+                      "EVENT_STATUS_NAME"=c("null","null"))
+
+adtLocation <- data.frame("PAT_ENC_CSN_ID" = c(11111111,22222222),
+                          "ADT_ARRIVAL_DTTM" = c("2016-05-22 00:47:00", "2017-12-21 00:56:00"),   
+                          "LAST_DEPARTMENT_ID" = c(928374,921234),
+                          "EVENT_TYPE_C"   = c(1,3),     
+                          "EVENT" =c("Admission", "Transfer in"),              
+                          "IN_DTTM" = c("01/01/2014 00:18", "01/01/2014 00:43"), 
+                          "OUT_DTTM" = c("01/01/2014 00:43", "01/01/2014 03:43"),        
+                          "ADT_DEPARTMENT_NM_WID" =c("ED 202020","ED 202020"),
+                          "ADT_ROOM_ID" =c(928374,921234),
+                          "ADT_ROOM_NM_WID" =c("A-RMA [343]","08-Y [332]" ),
+                          "ADT_BED_LABEL_WID"=c("A- Y [939]", "08-Y [928]"))
+
+chiefComplaint <- data.frame("PAT_ENC_CSN_ID" = c(11111111,22222222),
+                             "ADT_ARRIVAL_DTTM" = c("2016-05-22 00:47:00", "2017-12-21 00:56:00"), 
+                             "LAST_DEPARTMENT_ID" = c(928374,921234), 
+                             "LINE" = c(1,2),
+                             "REASON_VISIT_NAME" =c("FEVER","DIFFICULTY BREATHING"),
+                             "BEHAVIORAL_DASHB" =c(0,0),  
+                             "ENC_REASON_OTHER" =c("null","null"),
+                             "COMMENTS"=c("X 2 DAYS","ONSET TODAY"))
+
+diagnose <- data.frame("PAT_ENC_CSN_ID" = c(11111111,22222222),
+                       "ADT_ARRIVAL_DTTM" = c("2016-05-22 00:47:00", "2017-12-21 00:56:00"), 
+                       "LAST_DEPARTMENT_ID" = c(928374,921234),
+                       "PRIMARY_DX_YN"  = c("Y","Y") ,
+                       "LINE" = c(1,2),
+                       "REASON_VISIT_NAME" =c("FEVER","DIFFICULTY BREATHING"),
+                       "BEHAVIORAL_DASHB" =c(0,0),  
+                       "DX_NAME" =c("Wheezing","Upper respiratory infection"),
+                       "CURRENT_ICD10_LIST"=c("R06.2","J06.9"))
+```
+
+```{r echo = FALSE}
+tags$div(
+  h4('fEncounters.csv'),
+  DT::renderDataTable(fEncounters,
+    rownames = FALSE, style = "bootstrap",
+    options = list(
+      autoWidth = TRUE,
+      scrollX = TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+      lengthChange = FALSE,
+      searching = FALSE,
+      bInfo = FALSE,
+      paging = FALSE,
+      processing = FALSE
+    )
+), style = "width: 800px; margin-left: auto; margin-right: auto;")
+```
+
+```{r echo = FALSE}
+tags$div(
+  h4('events.csv'),
+  DT::renderDataTable(events,
+    rownames = FALSE, style = "bootstrap",
+    options = list(
+      autoWidth = TRUE,
+      scrollX = TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+      lengthChange = FALSE,
+      searching = FALSE,
+      bInfo = FALSE,
+      paging = FALSE,
+      processing = FALSE
+    )
+), style = "width: 800px; margin-left: auto; margin-right: auto;")
+```
+
+```{r echo = FALSE}
+tags$div(
+  h4('adt_location.csv'),
+  DT::renderDataTable(adtLocation,
+    rownames = FALSE, style = "bootstrap",
+    options = list(
+      autoWidth = TRUE,
+      scrollX = TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+      lengthChange = FALSE,
+      searching = FALSE,
+      bInfo = FALSE,
+      paging = FALSE,
+      processing = FALSE
+    )
+), style = "width: 800px; margin-left: auto; margin-right: auto;")
+```
+
+```{r echo = FALSE}
+tags$div(
+  h4('chief_complaints.csv'),
+  DT::renderDataTable(chiefComplaint,
+    rownames = FALSE, style = "bootstrap",
+    options = list(
+      autoWidth = TRUE,
+      scrollX = TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+      lengthChange = FALSE,
+      searching = FALSE,
+      bInfo = FALSE,
+      paging = FALSE,
+      processing = FALSE
+    )
+), style = "width: 800px; margin-left: auto; margin-right: auto;")
+```
+
+```{r echo = FALSE}
+tags$div(
+  h4('diagnose.csv'),
+  DT::renderDataTable(diagnose,
+    rownames = FALSE, style = "bootstrap",
+    options = list(
+      autoWidth = TRUE,
+      scrollX = TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+      lengthChange = FALSE,
+      searching = FALSE,
+      bInfo = FALSE,
+      paging = FALSE,
+      processing = FALSE
+    )
+), style = "width: 800px; margin-left: auto; margin-right: auto;")
+```
+
+***
+
+### Acknowlegements
+
+We would like to thank *Josh Kohrumel, Lawrence Stewart, Shauna George, Keri Carstairs, Ala Garza, Larry Leonard, Anouk Bellengi, Cynthia Sepulveda, Kendall Sanderson, Jason Malia, and Debbie Duncan* from **Rady Children's Hospital** for providing insights, resources and supports for helping complete this project.
+
+
+
+
+

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Rady Children’s Hospital Data Dictionary</title>
+
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/htmlwidgets-1.2/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.4/datatables.js"></script>
+<link href="site_libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/ionicons-2.0.1/css/ionicons.min.css" rel="stylesheet" />
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">RCH capstone</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    HomepPage
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-database"></span>
+     
+    Data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="weather.html">
+        <span class="fa fa-cloud"></span>
+         
+        Weather
+      </a>
+    </li>
+    <li>
+      <a href="Nation_Cal_flu.html">
+        <span class="ion ion-stats-bars"></span>
+         
+        Flu Overview
+      </a>
+    </li>
+    <li>
+      <a href="SdCounty.html">
+        <span class="ion ion-medkit"></span>
+         
+        SD Flu
+      </a>
+    </li>
+    <li>
+      <a href="Vacation_time_data.html">
+        <span class="ion ion-calendar"></span>
+         
+        Vacation Schedule
+      </a>
+    </li>
+    <li>
+      <a href="RCH_Data.html">
+        <span class="fa fa-table"></span>
+         
+        RCH Data
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="ion ion-edit"></span>
+     
+    Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="flowDiagram.html">
+        <span class="fa fa-stack-overflow"></span>
+         
+        Flow Diagram
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-modx"></span>
+     
+    Model
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="model.html">
+        <span class="ion ion-laptop"></span>
+         
+        Current Model
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Rady Children’s Hospital Data Dictionary</h1>
+
+</div>
+
+
+<style>
+pre {
+  width: 560px;
+  white-space: pre;
+  word-wrap: normal;
+  background-color: #ffffff;
+}
+</style>
+<p>RCH Datasets are all stored in RStudio Server on Citrix</p>
+<p><strong>Note: The dataset below are all fake dataset due to RCH information security requirements.</strong></p>
+<div id="section" class="section level2 tabset">
+<h2></h2>
+<div id="emergency-department-encounters" class="section level3">
+<h3>Emergency Department Encounters</h3>
+<div id="htmlwidget-d7327af093dd86983e11" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d7327af093dd86983e11">{"x":{"filter":"none","data":[["1","2"],[11111111,22222222],["2018-04-17 01:42:00","2018-04-23 00:56:00"],[123456,789101],[242526,27282930],[10,11],[123,136],[1,2],["2016-05-22","2017-12-21"],["2016-05-22 00:47:00","2017-12-21 00:56:00"],[5,7],["null","null"],[3,5],["null","null"],[3,4],["2016-05-22 11:02:00","2017-12-21 18:05:00"],[1234,2345],["2016-05-22 11:02:00","2017-12-21 18:05:00"],[2345,3456],[242526,27282930],["null","null"],[1,2],[1,1],["2016-05-22 11:51:00","2017-12-21 22:04:00"],["null","null"],[38575,19475],[1,1],["Y","Y"],[4.2,4.2],[1,4],["2016-05-22 12:05:00","2017-12-21 22:30:00"],[2,4],[23049,230984],[928374,921234],["2016-05-22","2017-12-21"],["2016-05-22 12:05:00","2017-12-21 22:30:00"],[23049,230984],[928374,921234],[924374,925234],[2,2],["null","null"],["2016-05-22 12:05:00","2017-12-21 22:30:00"],[924374,925234],[924374,925234],[924374,925234],["Y","Y"],["Y","Y"],["null","null"],["null","null"],[924374,925234],[924374,925234],[924374,925234],[924374,925234],[924374,925234],[924374,925234],["null","null"],["null","Ambulance"],["null","null"],["no","no"],["Urgent","Emergent"],["ALLERGIC REACTION","ALLERGIC REACTION"],["Discharged","Discharged"],["Food allergy","Food allergy"],["hospital","hospital"],["Emergency","Emergency"],["Emergency","Emergency"],["Home or Self Care","Home or Self Care"],["null","null"],["Carty Amy","Hok Zhu"],["Excellent A","Excellent B"],["Excellent A","Excellent B"],["Excellent A","Excellent B"],["Commercial","Medi-Cal"],["female","male"],["english","english"],["ED","UC"],[1,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>PAT_ENC_CSN_ID<\/th>\n      <th>UPDATE_DATE<\/th>\n      <th>ED_EPISODE_ID<\/th>\n      <th>PAT_ID<\/th>\n      <th>AGE_AT_ARRIVAL_YEARS<\/th>\n      <th>AGE_AT_ARRIVAL_MONTHS<\/th>\n      <th>ENC_ADDRESS_LINE<\/th>\n      <th>ADT_ARRIVAL_DATE<\/th>\n      <th>ADT_ARRIVAL_DTTM<\/th>\n      <th>MEANS_OF_ARRIVAL_C<\/th>\n      <th>AMBULANCE_CODE_C<\/th>\n      <th>PRIVATE_HOSPITAL_ENC_C<\/th>\n      <th>DISASTER_NUM<\/th>\n      <th>ACUITY_LEVEL_C<\/th>\n      <th>HOSPITAL_ADMISSION_DTTM<\/th>\n      <th>ADMISSION_EVENT_ID<\/th>\n      <th>EMERGENCY_ADMISSION_DTTM<\/th>\n      <th>EMERGENCY_ADMISSION_EVENT_ID<\/th>\n      <th>FIRST_CHIEF_COMPLAINT_ID<\/th>\n      <th>FIRST_CHIEF_COMPLAINT_OTHER<\/th>\n      <th>NUM_CHIEF_COMPLAINTS_ENC<\/th>\n      <th>ED_DISPOSITION_C<\/th>\n      <th>ED_DISPOSITION_DTTM<\/th>\n      <th>ED_DISPOSITION_PAT_CONDITION_C<\/th>\n      <th>PRIMARY_DX_ID<\/th>\n      <th>PRIMARY_DX_LINE<\/th>\n      <th>PRIMARY_DX_ED_YN<\/th>\n      <th>NUM_DX_ENC<\/th>\n      <th>NUM_ED_DX_ENC<\/th>\n      <th>ED_DEPARTURE_DTTM<\/th>\n      <th>ED_PRIMARY_CARE_AREA_ID<\/th>\n      <th>FIRST_EMERGENCY_DEPARTMENT_ID<\/th>\n      <th>LAST_EMERGENCY_DEPARTMENT_ID<\/th>\n      <th>HOSPITAL_DISCHARGE_DATE<\/th>\n      <th>HOSPITAL_DISCHARGE_DTTM<\/th>\n      <th>DISCHARGE_EVENT_ID<\/th>\n      <th>LAST_DEPARTMENT_ID<\/th>\n      <th>ADT_SERVICE_AREA_ID<\/th>\n      <th>DISCHARGE_DISPOSITION_C<\/th>\n      <th>DISCHARGE_DESTINATION_C<\/th>\n      <th>INPATIENT_ADMISSION_DTTM<\/th>\n      <th>INPATIENT_ADMISSION_EVENT_ID<\/th>\n      <th>INPATIENT_PAT_ENC_CSN_ID<\/th>\n      <th>PREV_HSP_PAT_ENC_CSN_ID<\/th>\n      <th>PREV_HSP_ENC_ED_YN<\/th>\n      <th>PREV_HSP_ENC_INPATIENT_YN<\/th>\n      <th>PREV_HSP_ENC_DATEDIFF<\/th>\n      <th>PREV_HSP_ENC_HOURDIFF<\/th>\n      <th>HOSPITAL_ACCOUNT_ID<\/th>\n      <th>PCP_AT_ENC_PROV_ID<\/th>\n      <th>FIRST_ED_ATTEND_PROV_ID<\/th>\n      <th>LAST_ED_ATTEND_PROV_ID<\/th>\n      <th>LONGEST_ED_ATTEND_PROV_ID<\/th>\n      <th>LOA_PAT_ENC_CSN_ID<\/th>\n      <th>LOA_LINE<\/th>\n      <th>MEANS_OF_ARRIVAL<\/th>\n      <th>AMBULANCE_CODE<\/th>\n      <th>PRIVATE_HOSP_ENC<\/th>\n      <th>ACUITY<\/th>\n      <th>FIRST_CHIEF_COMPLAINT<\/th>\n      <th>ED_DISPOSITION<\/th>\n      <th>PRIMARY_DX<\/th>\n      <th>ED_PRIMARY_CARE_AREA<\/th>\n      <th>FIRST_ED_DEPARTMENT<\/th>\n      <th>LAST_DEPARTMENT<\/th>\n      <th>DISCHARGE_DISPOSITION<\/th>\n      <th>DISCHARGE_DESTINATION<\/th>\n      <th>PCP_AT_TIME_OF_ENC<\/th>\n      <th>FIRST_ED_ATTENDING_PROV<\/th>\n      <th>LAST_ED_ATTENDING_PROV<\/th>\n      <th>LONGEST_ED_ATTENDING_PROV<\/th>\n      <th>FINANCIAL_CLASS_NAME<\/th>\n      <th>PATIENT_SEX<\/th>\n      <th>LANGUAGE<\/th>\n      <th>ED_OR_UC_DEPARTMENT<\/th>\n      <th>BEHAVIORAL_DASHB<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,3,4,5,6,7,10,12,14,16,18,19,21,22,25,26,28,29,31,32,33,36,37,38,39,42,43,44,49,50,51,52,53,54,76]},{"orderable":false,"targets":0}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>The actual Patient Encounters data has 77 columns and 638,024 observations. The database contains information on:</p>
+<ul>
+<li><code>PAT_ENC_CSN_ID</code>: The serial number for the patient contact of the patient record. This number is unique across all patient contacts in the system.</li>
+<li><code>UPDATE_DATE</code>: This column contains the last date and time at which this row was updated.</li>
+<li><code>ED_EPISODE_ID</code>: The unique ID of the Inpatient episode record for the ED visit.</li>
+<li><code>PAT_ID</code>: The unique ID of the patient record for this row. This column is frequently used to link to the PATIENT table.</li>
+<li><code>AGE_AT_ARRIVAL_YEARS</code>: Patient’s calculated age in years upon arrival.</li>
+<li><code>AGE_AT_ARRIVAL_MONTHS</code>: Patient’s calculated age in months upon arrival.</li>
+<li><code>ENC_ADDRESS_LINE</code>: The line on which the patient’s address is documented on or before the day after arrival.</li>
+<li><code>ADT_ARRIVAL_DATE</code>: The date of the patient’s arrival.<br />
+</li>
+<li><code>ADT_ARRIVAL_DTTM</code>: The date and time of arrival for this patient contact.</li>
+<li><code>MEANS_OF_ARRIVAL_C</code>: The category value corresponding to the means of arrival of the patient for this patient contact.</li>
+<li><code>AMBULANCE_CODE_C</code>: The category number for the ambulance code.</li>
+<li><code>PRIVATE_HOSPITAL_ENC_C</code>: The category value corresponding to private encounter setting for this patient contact.</li>
+<li><code>DISASTER_NUM</code>: This column stores the disaster number, which is a number given by the ambulance company to patients during catastrophes that cause massive patient influxes to the hospital.</li>
+<li><code>ACUITY_LEVEL_C</code>: The category value corresponding to the acuity level for this patient contact.</li>
+<li><code>HOSPITAL_ADMISSION_DTTM</code>: The date and time that the patient was first admitted to the facility, bedded in the ED, or confirmed for an HOV for this contact, regardless of patient’s base patient class.</li>
+<li><code>ADMISSION_EVENT_ID</code>: The ID number of the admission event record from the ADT master file for this patient stay.<br />
+</li>
+<li><code>EMERGENCY_ADMISSION_DTTM</code>: The date and time during the hospital encounter when the patient first received a base patient class of emergency.</li>
+<li><code>EMERGENCY_ADMISSION_EVENT_ID</code>: The ADT event record for the hospital encounter where the patient first received a base patient class of emergency.<br />
+</li>
+<li><code>FIRST_CHIEF_COMPLAINT_ID</code>: This column stores the chief complaint ID stored on line 1.</li>
+<li><code>FIRST_CHIEF_COMPLAINT_OTHER</code>: The custom reason for visit entered when the clinical system user chooses “Other” as a reason for visit on line 1.<br />
+</li>
+<li><code>NUM_CHIEF_COMPLAINTS_ENC</code>: The number of chief complaints documented on the encounter.</li>
+<li><code>ED_DISPOSITION_C</code>: The disposition of the patient when discharged from the ED.<br />
+</li>
+<li><code>ED_DISPOSITION_DTTM</code>: The date and time that the disposition was entered.</li>
+<li><code>ED_DISPOSITION_PAT_CONDITION_C</code>: The category ID of the patient condition at time of disposition in the ED.</li>
+<li><code>PRIMARY_DX_ID</code>: The primary diagnosis ID for the encounter. This column can be used to link to CLARITY_EDG.</li>
+<li><code>PRIMARY_DX_LINE</code>: The line number associated with the primary diagnosis. This can be used with PAT_ENC_CSN_ID to link to the primary diagnosis in PAT_ENC_DX.</li>
+<li><code>PRIMARY_DX_ED_YN</code>: This column will be ‘Y’ if the primary diagnosis is documented as an ED diagnosis, otherwise it will be ‘N’.</li>
+<li><code>NUM_DX_ENC</code>: The number of visit diagnoses documented on this encounter.<br />
+</li>
+<li><code>NUM_ED_DX_ENC</code>: The number of ED visit diagnoses documented on this encounter.</li>
+<li><code>ED_DEPARTURE_DTTM</code>: Date and time the patient left the ED.<br />
+</li>
+<li><code>ED_PRIMARY_CARE_AREA_ID</code>: The unique ID for the primary area of care for the patient during their stay in the ED.</li>
+<li><code>FIRST_EMERGENCY_DEPARTMENT_ID</code>: The unique ID of the first emergency department the patient was roomed in.<br />
+</li>
+<li><code>LAST_EMERGENCY_DEPARTMENT_ID</code>: The unique ID of the last emergency department the patient was roomed in.</li>
+<li><code>HOSPITAL_DISCHARGE_DATE</code>: The hospital discharge date for this patient contact.<br />
+</li>
+<li><code>HOSPITAL_DISCHARGE_DTTM</code>: The hospital discharge date and time for this patient contact.</li>
+<li><code>DISCHARGE_EVENT_ID</code>: The ID number of the discharge event record from the ADT master file for this patient stay.<br />
+</li>
+<li><code>LAST_DEPARTMENT_ID</code>: The ID number of the unit for the most recent location of the patient for this patient contact.</li>
+<li><code>ADT_SERVICE_AREA_ID</code>: The ID number of the service area for the most recent location of the patient for this patient contact.<br />
+</li>
+<li><code>DISCHARGE_DISPOSITION_C</code>: The category value corresponding to the discharge disposition for this patient contact.</li>
+<li><code>DISCHARGE_DESTINATION_C</code>: The category value corresponding to the discharge destination for this patient contact.<br />
+</li>
+<li><code>INPATIENT_PAT_ENC_CSN_ID</code>: The encounter CSN for an inpatient encounter within 1 hour of hospital discharge if this encounter was never inpatient (PAT_ENC_HSP.INP_ADM_DATE is null). This corresponds to the inpatient portion of a stay in discharge/readmit workflows. If this encounter was a combined ED/IP encounter, then this will be the same as the encounter CSN.</li>
+<li><code>PREV_HSP_PAT_ENC_CSN_ID</code>: The encounter CSN for the previous hospital encounter if that encounter was discharged less than 60 days ago.<br />
+</li>
+<li><code>PREV_HSP_ENC_ED_YN</code>: This column stores whether the previous encounter (whose CSN is stored in PREV_HSP_ENC_CSN_ID) was an ED encounter.</li>
+<li><code>PREV_HSP_ENC_INPATIENT_YN</code>：This column stores whether the previous encounter (whose CSN is stored in PREV_HSP_ENC_CSN_ID) was an inpatient encounter.<br />
+</li>
+<li><code>PREV_HSP_ENC_DATEDIFF</code>: This column stores the time difference in days between the arrival time of this encounter and the discharge time of the encounter whose encounter CSN is stored in PREV_HSP_ENC_CSN_ID.</li>
+<li><code>PREV_HSP_ENC_HOURDIFF</code>: This column stores the time difference in hours between the arrival time of this encounter and the discharge time of the encounter whose encounter CSN is stored in PREV_HSP_ENC_CSN_ID.<br />
+</li>
+<li><code>HOSPITAL_ACCOUNT_ID</code>: The unique ID number of the hospital account for this patient contact.</li>
+<li><code>PCP_AT_ENC_PROV_ID</code>: The unique ID of the provider record for the patient’s General Primary Care Provider as of the date of the encounter. This ID may be encrypted if you have elected to use enterprise reporting’s security utility.<br />
+</li>
+<li><code>FIRST_ED_ATTEND_PROV_ID</code>: The unique ID of the attending provider for the patient who was first assigned to the patient as an ED attending.</li>
+<li><code>LAST_ED_ATTEND_PROV_ID</code>: The unique ID of the attending provider for the patient who was last unassigned to the patient as an ED attending.<br />
+</li>
+<li><code>LONGEST_ED_ATTEND_PROV_ID</code>: The unique ID of the attending provider for the patient who had the most time assigned to the patient as an ED attending.</li>
+<li><code>LOA_PAT_ENC_CSN_ID</code>: The unique contact serial number for the contact on leave of absence when this encounter happened. This number is unique across all patient encounters in your system. If you use IntraConnect, this is the Unique Contact Identifier (UCI).<br />
+</li>
+<li><code>LOA_LINE</code>: The line number for the information associated with this LOA contact. Multiple LOAs can be associated with a contact.</li>
+<li><code>MEANS_OF_ARRIVAL</code>: The category value corresponding to the means of arrival of the patient for this patient contact.<br />
+</li>
+<li><code>AMBULANCE_CODE</code>: The category number for the ambulance code.</li>
+<li><code>PRIVATE_HOSP_ENC</code>: The category value corresponding to private encounter setting.<br />
+</li>
+<li><code>ACUITY</code>: The category value corresponding to the acuity level</li>
+<li><code>FIRST_CHIEF_COMPLAINT</code>: This column stores the chief complaint.</li>
+<li><code>ED_DISPOSITION</code>: The disposition of the patient when discharged from the ED.</li>
+<li><code>PRIMARY_DX</code>: The primary diagnosis for the encounter. This column can be used to link to CLARITY_EDG.<br />
+</li>
+<li><code>ED_PRIMARY_CARE_AREA</code>: The primary area of care for the patient during their stay in the ED.</li>
+<li><code>FIRST_ED_DEPARTMENT</code>: First ED department patient get into.<br />
+</li>
+<li><code>LAST_DEPARTMENT</code>: Last ED department patient stayed.</li>
+<li><code>DISCHARGE_DISPOSITION</code>: The disposition of the patient when discharged from the ED.<br />
+</li>
+<li><code>DISCHARGE_DESTINATION</code>: The patient condition at time of disposition when discharged from the ED.</li>
+<li><code>PCP_AT_TIME_OF_ENC</code>: The provider record for the patient’s General Primary Care Provider as of the date of the encounter.<br />
+</li>
+<li><code>FIRST_ED_ATTENDING_PROV</code>: The attending provider for the patient who was first assigned to the patient as an ED attending.</li>
+<li><code>LAST_ED_ATTENDING_PROV</code>: The attending provider for the patient who was last unassigned to the patient as an ED attending.<br />
+</li>
+<li><code>LONGEST_ED_ATTENDING_PROV</code>: The attending provider for the patient who had the most time assigned to the patient as an ED attending.</li>
+<li><code>FINANCIAL_CLASS_NAME</code>: Patient’s financial class<br />
+</li>
+<li><code>PATIENT_SEX</code>: Patient’s sex</li>
+<li><code>LANGUAGE</code>: Language Patient speaks<br />
+</li>
+<li><code>ED_OR_UC_DEPARTMENT</code>: Department which patient get taken care of</li>
+<li><code>BEHAVIORAL_DASHB</code>: Dummy variable. If patient is behavioral patient, then it is “1”, “0” otherwise.</li>
+</ul>
+</div>
+<div id="patient-events" class="section level3">
+<h3>Patient Events</h3>
+<div id="htmlwidget-82ecc361955c79c65e29" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-82ecc361955c79c65e29">{"x":{"filter":"none","data":[["1","2"],[11111111,22222222],["2016-05-22 00:47:00","2017-12-21 00:56:00"],[928374,921234],[1,2],[58,56],["Patient arrived in ED","Triage Completed"],["Patient arrived in ED","Triage Completed"],["01/01/2014 00:14","01/01/2014 00:14"],[928374,921234],["Excellent A","Excellent B"],["Licensed Vocational Nurse","Registered Nurse"],["LVN/LPN","RN"],["null","null"],[1010101,2020220],["EMERGENCY","EMERGENCY"],["null","null"],["null","null"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>PAT_ENC_CSN_ID<\/th>\n      <th>ADT_ARRIVAL_DTTM<\/th>\n      <th>LAST_DEPARTMENT_ID<\/th>\n      <th>LINE<\/th>\n      <th>EVENT_TYPE<\/th>\n      <th>EVENT_DISPLAY_NAME<\/th>\n      <th>EVENT_NAME<\/th>\n      <th>EVENT_TIME<\/th>\n      <th>EVENT_USER_ID<\/th>\n      <th>PROV_NAME<\/th>\n      <th>PROV_TYPE<\/th>\n      <th>CLINICIAN_TITLE<\/th>\n      <th>EVENT_CMT<\/th>\n      <th>EVENT_DEPT_ID<\/th>\n      <th>DEPARTMENT_NAME<\/th>\n      <th>EVENT_STATUS_C<\/th>\n      <th>EVENT_STATUS_NAME<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,3,4,5,9,14]},{"orderable":false,"targets":0}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>Patients’ events dataset has 17 columns and 22,429,193 observations. The file has information on:</p>
+<ul>
+<li><code>PAT_ENC_CSN_ID</code>: The serial number for the patient contact of the patient record. This number is unique across all patient contacts in the system.</li>
+<li><code>ADT_ARRIVAL_DTTM</code>: The date and time of arrival for this patient contact.</li>
+<li><code>LAST_DEPARTMENT_ID</code>: The ID number of the unit for the most recent location of the patient for this patient contact.</li>
+<li><code>LINE</code>:The line number for the information associated with this record. Multiple pieces of information can be associated with this record.</li>
+<li><code>EVENT_TYPE</code>: The associated event template for this event record. This column is frequently used to link to the ED_EVENT_TMPL_INFO table.</li>
+<li><code>EVENT_DISPLAY_NAME</code>:This column is deprecated. The column previously extracted the category title. In order to avoid data consistency issues, use EVENT_STATUS_C to link to ZC_PBA_REC_STAT instead.</li>
+<li><code>EVENT_NAME</code>: The display name of the event.</li>
+<li><code>EVENT_TIME</code>:The instant when the event occurred.</li>
+<li><code>EVENT_USER_ID</code>:The unique ID of the user who initiated the event. This column is frequently used to link to the CLARITY_EMP table.</li>
+<li><code>PROV_NAME</code>:The name associated with the provider record</li>
+<li><code>PROV_TYPE</code>: The type associated with the provider record</li>
+<li><code>CLINICIAN_TITLE</code>: title of clinicain</li>
+<li><code>EVENT_CMT</code>: The comments entered for the event.</li>
+<li><code>EVENT_DEPT_ID</code>:The unique ID of the department in which this event was fired.</li>
+<li><code>DEPARTMENT_NAME</code>: The name of the department in which this event was fired.</li>
+<li><code>EVENT_STATUS_C</code>:The category number for the event’s status.</li>
+<li><code>EVENT_STATUS_NAME</code>: The name for the event’s status.</li>
+</ul>
+</div>
+<div id="administration-location" class="section level3">
+<h3>Administration Location</h3>
+<div id="htmlwidget-83e66147ad1ac7285981" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-83e66147ad1ac7285981">{"x":{"filter":"none","data":[["1","2"],[11111111,22222222],["2016-05-22 00:47:00","2017-12-21 00:56:00"],[928374,921234],[1,3],["Admission","Transfer in"],["01/01/2014 00:18","01/01/2014 00:43"],["01/01/2014 00:43","01/01/2014 03:43"],["ED 202020","ED 202020"],[928374,921234],["A-RMA [343]","08-Y [332]"],["A- Y [939]","08-Y [928]"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>PAT_ENC_CSN_ID<\/th>\n      <th>ADT_ARRIVAL_DTTM<\/th>\n      <th>LAST_DEPARTMENT_ID<\/th>\n      <th>EVENT_TYPE_C<\/th>\n      <th>EVENT<\/th>\n      <th>IN_DTTM<\/th>\n      <th>OUT_DTTM<\/th>\n      <th>ADT_DEPARTMENT_NM_WID<\/th>\n      <th>ADT_ROOM_ID<\/th>\n      <th>ADT_ROOM_NM_WID<\/th>\n      <th>ADT_BED_LABEL_WID<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,3,4,9]},{"orderable":false,"targets":0}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>AD_Location dataset has 11 columns and 1,849,759 observations. The information extracted contains:</p>
+<ul>
+<li><code>PAT_ENC_CSN_ID</code>: The serial number for the patient contact of the patient record. This number is unique across all patient contacts in the system.</li>
+<li><code>ADT_ARRIVAL_DTTM</code>: The date and time of arrival for this patient contact.</li>
+<li><code>LAST_DEPARTMENT_ID</code>: The ID number of the unit for the most recent location of the patient for this patient contact.</li>
+<li><code>EVENT_TYPE_C</code>:The category value corresponding to the type of the event record.</li>
+<li><code>EVENT</code>:The ADT event record.</li>
+<li><code>IN_DTTM</code>:The instant when the patient was moved to the department/room/bed.</li>
+<li><code>OUT_DTTM</code>:The instant when the patient was moved out of the department/room/bed. If the patient is still in the department/room/bed, this column will return the current instant. The column PAT_OUT_DTTM will return the instant when the patient was moved out of the department/room/bed, but will return nothing if the patient is still in the department/room/bed.</li>
+<li><code>ADT_DEPARTMENT_NM_WID</code>:A unique department identifier that consists of the name and the department ID. This column is often used for grouping, sorting and display purposes in reports.</li>
+<li><code>ADT_ROOM_ID</code>:The ID number of the room of the event record during the effective time span.</li>
+<li><code>ADT_ROOM_NM_WID</code>:A unique room identifier that consists of the name and the room ID. This column is often used for grouping, sorting and display purposes in reports.</li>
+<li><code>ADT_BED_LABEL_WID</code>:A unique bed identifier that consists of the name and the bed ID. This column is often used for grouping, sorting and display purposes in reports.</li>
+</ul>
+</div>
+<div id="chief-complaint" class="section level3">
+<h3>Chief Complaint</h3>
+<div id="htmlwidget-95975e4419696450663a" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-95975e4419696450663a">{"x":{"filter":"none","data":[["1","2"],[11111111,22222222],["2016-05-22 00:47:00","2017-12-21 00:56:00"],[928374,921234],[1,2],["FEVER","DIFFICULTY BREATHING"],[0,0],["null","null"],["X 2 DAYS","ONSET TODAY"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>PAT_ENC_CSN_ID<\/th>\n      <th>ADT_ARRIVAL_DTTM<\/th>\n      <th>LAST_DEPARTMENT_ID<\/th>\n      <th>LINE<\/th>\n      <th>REASON_VISIT_NAME<\/th>\n      <th>BEHAVIORAL_DASHB<\/th>\n      <th>ENC_REASON_OTHER<\/th>\n      <th>COMMENTS<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,3,4,6]},{"orderable":false,"targets":0}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>Chief Complaint dataset has 8 columns and 2 observations. The information extracted contains:</p>
+<ul>
+<li><code>PAT_ENC_CSN_ID</code>: The serial number for the patient contact of the patient record. This number is unique across all patient contacts in the system.</li>
+<li><code>ADT_ARRIVAL_DTTM</code>: The date and time of arrival for this patient contact.</li>
+<li><code>LAST_DEPARTMENT_ID</code>: The ID number of the unit for the most recent location of the patient for this patient contact.</li>
+<li><code>LINE</code>:The line number for the information associated with this record. Multiple pieces of information can be associated with this record.</li>
+<li><code>REASON_VISIT_NAME</code>: Reason of Visit</li>
+<li><code>BEHAVIORAL_DASHB</code>: Behavioral patient = “1”, “0” otherwise</li>
+<li><code>ENC_REASON_OTHER</code>: other reasons</li>
+<li><code>COMMENTS</code>: commnets for the patient</li>
+</ul>
+</div>
+<div id="patient-diagnoses" class="section level3">
+<h3>Patient Diagnoses</h3>
+<div id="htmlwidget-3399db043e029fa37d52" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3399db043e029fa37d52">{"x":{"filter":"none","data":[["1","2"],[11111111,22222222],["2016-05-22 00:47:00","2017-12-21 00:56:00"],[928374,921234],["Y","Y"],[1,2],["FEVER","DIFFICULTY BREATHING"],[0,0],["Wheezing","Upper respiratory infection"],["R06.2","J06.9"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>PAT_ENC_CSN_ID<\/th>\n      <th>ADT_ARRIVAL_DTTM<\/th>\n      <th>LAST_DEPARTMENT_ID<\/th>\n      <th>PRIMARY_DX_YN<\/th>\n      <th>LINE<\/th>\n      <th>REASON_VISIT_NAME<\/th>\n      <th>BEHAVIORAL_DASHB<\/th>\n      <th>DX_NAME<\/th>\n      <th>CURRENT_ICD10_LIST<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"autoWidth":true,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,3,5,7]},{"orderable":false,"targets":0}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>Patient Diagnoses dataset has 8 columns and 1,218,775 observations. The information extracted contains:</p>
+<ul>
+<li><code>PAT_ENC_CSN_ID</code>: The serial number for the patient contact of the patient record. This number is unique across all patient contacts in the system.</li>
+<li><code>ADT_ARRIVAL_DTTM</code>: The date and time of arrival for this patient contact.</li>
+<li><code>LAST_DEPARTMENT_ID</code>: The ID number of the unit for the most recent location of the patient for this patient contact.</li>
+<li>`PRIMARY_DX_YN</li>
+<li><code>LINE</code>:The line number for the information associated with this record. Multiple pieces of information can be associated with this record.</li>
+<li><code>BEHAVIORAL_JASON</code>: Behavioral patient = “1”, “0” otherwise</li>
+<li><code>DX_NAME</code>: Name of Diagnoses</li>
+<li><code>CURRENT_ICD10_LIST</code>: Current ICD list</li>
+</ul>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

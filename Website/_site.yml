@@ -1,0 +1,44 @@
+name: RCH capstone
+navbar:
+  title: RCH capstone
+  type: inverse
+  left:
+  - text: HomepPage
+    icon: fa-home
+    href: index.html
+  - text: Data
+    icon: fa-database
+    menu:
+    - text: Weather
+      href: weather.html
+      icon: fa-cloud
+    - text: Flu Overview
+      href: Nation_Cal_flu.html
+      icon: ion-stats-bars
+    - text: SD Flu
+      href: SdCounty.html
+      icon: ion-medkit
+    - text: Vacation Schedule
+      href: Vacation_time_data.html
+      icon: ion-calendar
+    - text: RCH Data
+      href: RCH_Data.html
+      icon: fa-table
+  - text: Analysis
+    icon: ion-edit
+    menu:
+    - text: Flow Diagram
+      href: flowDiagram.html
+      icon: fa-stack-overflow
+  - text: Model
+    icon: fa-modx
+    menu:
+    - text: Current Model 
+      href: model.html
+      icon: ion-laptop
+output_dir: _site
+output:
+  html_document:
+    lib_dir: site_libs
+    self_contained: no
+

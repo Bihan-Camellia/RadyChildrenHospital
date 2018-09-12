@@ -1,0 +1,107 @@
+---
+title: "San Diego Weather"
+output: 
+  html_document:
+   theme: flatly
+   highlight: tango
+   code_folding: hide
+---
+
+<style>
+pre {
+  width: 560px;
+  white-space: pre;
+  word-wrap: normal;
+  background-color: #ffffff;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, warning = FALSE, message = FALSE, 
+  comment = NA, dpi = 144
+)
+
+library(radiant)
+library(dplyr)
+library(readr)
+library(lubridate)
+
+col <- c('year','month','day','hour','minute','temperature','relativeHumidity','meanSeaLevelPressure','totalPrecipitation','totalCloudCover','sunshineDuration','windSpeed','windDirection')
+weather <- read_csv("data/history_export.csv", col_names = col, skip = 1)
+
+options(repos="https://cran.rstudio.com" )
+```
+
+## Description
+
+Data source: [www.meteoblue.com](https://www.meteoblue.com/en/weather/archive/export/san-diego_united-states-of-america_5391811)
+
+`Relative Humidity`:  The amount of water vapor present in air expressed as a percentage of the amount needed for saturation at the same temperature.
+
+`Mean Sea Level Pressure`:  The average atmospheric pressure at sea level.
+
+`Total Precipitation`:  Total product of the condensation of atmospheric water vapor that falls under gravity. 
+
+`Total Cloud Cover`:  The total fraction of the sky obscured by clouds when observed from a particular location.
+
+`Sunshine Duration`:  Duration of sunshine in given period (usually, a day or a year) for a given location on Earth. 
+
+`Wind Speed`:  Wind flow velocity (a fundamental atmospheric quantity).
+
+`Wind Direction`:  The direction from which the wind originates.
+
+
+## Weather Data
+```{r}
+DT::datatable(weather[1:500, c(-5)], options = list(autoWidth = TRUE, scrollX = TRUE))
+```
+
+<br>
+
+## Weather Trend {.tabset}
+
+### Humidity
+
+```{r fig.width = 16, fig.height = 9, dpi = 400}
+weather %>% 
+  mutate(date = ymd(paste(year, month, day, sep = '-'))) %>% 
+  group_by(date) %>% 
+  summarise(avg = mean(relativeHumidity)) %>% 
+  ggplot(aes(x = date, y = avg)) +
+  geom_line(alpha = 0.8, size = 0.5) +
+  labs(x = NULL, y = 'Daily Humidity Average') +
+  theme_bw() +
+  scale_x_date(date_breaks = '1 month') +
+  theme(panel.grid.major = element_blank(),
+        axis.text.x = element_text(angle = 90))
+
+weather %>% ggplot(aes(x = factor(month), y = relativeHumidity)) +
+  geom_boxplot() +
+  theme_bw() +
+  theme(panel.grid.major = element_blank()) +
+  labs(x = 'Month', y = 'Relative Humidity')
+```
+
+### Temperature
+
+```{r fig.width = 16, fig.height = 9, dpi = 400}
+weather %>% 
+  mutate(date = ymd(paste(year, month, day, sep = '-'))) %>% 
+  group_by(date) %>% 
+  summarise(avg = mean(temperature)) %>% 
+  ggplot(aes(x = date, y = avg)) +
+  geom_line(alpha = 0.8, size = 0.5) +
+  # geom_hline(yintercept = mean(weather$temperature), size = 1, linetype = 2, color = 'red', alpha = 0.7) +
+  labs(x = NULL, y = 'Daily Temperature Average') +
+  theme_bw() +
+  scale_x_date(date_breaks = '1 month') +
+  theme(panel.grid.major = element_blank(),
+        axis.text.x = element_text(angle = 90))
+
+weather %>% ggplot(aes(x = factor(month), y = temperature)) +
+  geom_boxplot() +
+  theme_bw() +
+  theme(panel.grid.major = element_blank()) +
+  labs(x = 'Month', y = 'Temperature')
+```

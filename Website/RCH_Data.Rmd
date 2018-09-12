@@ -1,0 +1,366 @@
+---
+title: Rady Children's Hospital Data Dictionary
+output: 
+  html_document:
+   theme: flatly
+   highlight: tango
+   code_folding: hide
+---
+
+<style>
+pre {
+  width: 560px;
+  white-space: pre;
+  word-wrap: normal;
+  background-color: #ffffff;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, comment=NA)
+library(tidyverse)
+library(lubridate)
+library(stringr)
+library(radiant)
+library(knitr)
+```
+
+RCH Datasets are all stored in RStudio Server on Citrix
+
+**Note: The dataset below are all fake dataset due to RCH information security requirements.**
+
+## {.tabset}
+
+### Emergency Department Encounters
+
+```{r}
+fEncounters <- data.frame("PAT_ENC_CSN_ID" = c(11111111,22222222),
+                          "UPDATE_DATE" = c("2018-04-17 01:42:00", "2018-04-23 00:56:00"),
+                          "ED_EPISODE_ID" = c(123456, 789101),
+                          "PAT_ID" = c(242526,27282930),
+                          "AGE_AT_ARRIVAL_YEARS" = c(10, 11), 
+                          "AGE_AT_ARRIVAL_MONTHS" = c(123, 136),
+                          "ENC_ADDRESS_LINE" = c(1,2),
+                          "ADT_ARRIVAL_DATE" = c("2016-05-22", "2017-12-21"),
+                          "ADT_ARRIVAL_DTTM" = c("2016-05-22 00:47:00", "2017-12-21 00:56:00"),
+                          "MEANS_OF_ARRIVAL_C" = c(5,7),
+                          "AMBULANCE_CODE_C" = c("null", "null"),
+                          "PRIVATE_HOSPITAL_ENC_C" = c(3,5),
+                          "DISASTER_NUM" = c("null", "null"),
+                          "ACUITY_LEVEL_C"=c(3,4),
+                          "HOSPITAL_ADMISSION_DTTM"= c("2016-05-22 11:02:00", "2017-12-21 18:05:00"),
+                          "ADMISSION_EVENT_ID"=c(1234,2345),
+                          "EMERGENCY_ADMISSION_DTTM" = c("2016-05-22 11:02:00", "2017-12-21 18:05:00"),
+                          "EMERGENCY_ADMISSION_EVENT_ID"  =c(2345,3456),
+                          "FIRST_CHIEF_COMPLAINT_ID" =  c(242526,27282930),
+                          "FIRST_CHIEF_COMPLAINT_OTHER" = c("null", "null"),
+                          "NUM_CHIEF_COMPLAINTS_ENC"  = c(1, 2),
+                          "ED_DISPOSITION_C" = c(1,1),
+                          "ED_DISPOSITION_DTTM" = c("2016-05-22 11:51:00", "2017-12-21 22:04:00"),
+                          "ED_DISPOSITION_PAT_CONDITION_C" = c("null", "null"),
+                          "PRIMARY_DX_ID" = c(38575,19475),
+                          "PRIMARY_DX_LINE"  = c(1,1),
+                          "PRIMARY_DX_ED_YN"  = c("Y","Y") ,
+                          "NUM_DX_ENC" =c(4.2),
+                          "NUM_ED_DX_ENC" =c(1,4),
+                          "ED_DEPARTURE_DTTM" = c("2016-05-22 12:05:00", "2017-12-21 22:30:00"),
+                          "ED_PRIMARY_CARE_AREA_ID" = c(2,4),
+                          "FIRST_EMERGENCY_DEPARTMENT_ID" =c(23049,230984),
+                          "LAST_EMERGENCY_DEPARTMENT_ID" = c(928374,921234),
+                          "HOSPITAL_DISCHARGE_DATE" = c("2016-05-22", "2017-12-21"),
+                          "HOSPITAL_DISCHARGE_DTTM" = c("2016-05-22 12:05:00", "2017-12-21 22:30:00"),      
+                          "DISCHARGE_EVENT_ID"  =c(23049,230984),
+                          "LAST_DEPARTMENT_ID" = c(928374,921234),
+                          "ADT_SERVICE_AREA_ID" = c(924374,925234),
+                          "DISCHARGE_DISPOSITION_C" =c(2,2),    
+                          "DISCHARGE_DESTINATION_C" =c("null", "null"),
+                          "INPATIENT_ADMISSION_DTTM" =c("2016-05-22 12:05:00", "2017-12-21 22:30:00"),
+                          "INPATIENT_ADMISSION_EVENT_ID"  = c(924374,925234),
+                          "INPATIENT_PAT_ENC_CSN_ID" = c(924374,925234),
+                          "PREV_HSP_PAT_ENC_CSN_ID" = c(924374,925234),
+                          "PREV_HSP_ENC_ED_YN"  = c("Y","Y") ,
+                          "PREV_HSP_ENC_INPATIENT_YN"  = c("Y","Y") ,
+                          "PREV_HSP_ENC_DATEDIFF" =c("null", "null"),
+                          "PREV_HSP_ENC_HOURDIFF" =c("null", "null"),
+                          "HOSPITAL_ACCOUNT_ID" = c(924374,925234),
+                          "PCP_AT_ENC_PROV_ID" = c(924374,925234),
+                          "FIRST_ED_ATTEND_PROV_ID"  = c(924374,925234),
+                          "LAST_ED_ATTEND_PROV_ID" = c(924374,925234),
+                          "LONGEST_ED_ATTEND_PROV_ID"  = c(924374,925234),
+                          "LOA_PAT_ENC_CSN_ID"   = c(924374,925234),
+                          "LOA_LINE" =c("null", "null"),
+                          "MEANS_OF_ARRIVAL"  =c("null", "Ambulance"), 
+                          "AMBULANCE_CODE" = c("null", "null"),
+                          "PRIVATE_HOSP_ENC" = c("no", "no"),
+                          "ACUITY" = c("Urgent","Emergent"), 
+                          "FIRST_CHIEF_COMPLAINT" =c("ALLERGIC REACTION", "ALLERGIC REACTION"),
+                          "ED_DISPOSITION" =c("Discharged","Discharged"),
+                          "PRIMARY_DX" =c("Food allergy", "Food allergy"),
+                          "ED_PRIMARY_CARE_AREA"  =c("hospital", "hospital"),
+                          "FIRST_ED_DEPARTMENT" =c("Emergency", "Emergency"),
+                         "LAST_DEPARTMENT" =c("Emergency", "Emergency"),
+                         "DISCHARGE_DISPOSITION"  =c("Home or Self Care", "Home or Self Care"),
+                         "DISCHARGE_DESTINATION" =c("null", "null"),
+                         "PCP_AT_TIME_OF_ENC" =c("Carty Amy", "Hok Zhu"),
+                         "FIRST_ED_ATTENDING_PROV" =c("Excellent A", "Excellent B"),
+                         "LAST_ED_ATTENDING_PROV"  =c("Excellent A", "Excellent B"),
+                         "LONGEST_ED_ATTENDING_PROV" =c("Excellent A", "Excellent B"),
+                         "FINANCIAL_CLASS_NAME" =c("Commercial","Medi-Cal"),
+                         "PATIENT_SEX" =c("female", "male"),
+                         "LANGUAGE" =c("english", "english"),
+                         "ED_OR_UC_DEPARTMENT" = c("ED", "UC"),
+                         "BEHAVIORAL_DASHB"  =c(1,0))
+
+```
+
+
+```{r}
+# 
+# kable(fEncounters, "html") %>%
+#   kable_styling(bootstrap_options = c("striped", "hover", "condensed",  "bordered")) %>%
+#   kable_styling() %>%
+#   scroll_box(width = "100%", height = "150px")
+
+DT::datatable(fEncounters, options = list(autoWidth = TRUE, scrollX = TRUE))
+```
+
+The actual Patient Encounters data has 77 columns and 638,024 observations. The database contains information on:
+
+
+* `PAT_ENC_CSN_ID`: The serial number for the patient contact of the patient record. This number is unique across all patient contacts in the system.
+* `UPDATE_DATE`: This column contains the last date and time at which this row was updated.
+* `ED_EPISODE_ID`: The unique ID of the Inpatient episode record for the ED visit.
+* `PAT_ID`: The unique ID of the patient record for this row. This column is frequently used to link to the PATIENT table.
+* `AGE_AT_ARRIVAL_YEARS`: Patient's calculated age in years upon arrival. 
+* `AGE_AT_ARRIVAL_MONTHS`: Patient's calculated age in months upon arrival.
+* `ENC_ADDRESS_LINE`: The line on which the patient's address is documented on or before the day after arrival. 
+* `ADT_ARRIVAL_DATE`: The date of the patient's arrival.              
+* `ADT_ARRIVAL_DTTM`: The date and time of arrival for this patient contact.
+* `MEANS_OF_ARRIVAL_C`: The category value corresponding to the means of arrival of the patient for this patient contact.
+* `AMBULANCE_CODE_C`: The category number for the ambulance code.
+* `PRIVATE_HOSPITAL_ENC_C`: The category value corresponding to private encounter setting for this patient contact.
+* `DISASTER_NUM`: This column stores the disaster number, which is a number given by the ambulance company to patients during catastrophes that cause massive patient influxes to the hospital.
+* `ACUITY_LEVEL_C`: The category value corresponding to the acuity level for this patient contact.
+* `HOSPITAL_ADMISSION_DTTM`: The date and time that the patient was first admitted to the facility, bedded in the ED, or confirmed for an HOV for this contact, regardless of patient's base patient class.
+* `ADMISSION_EVENT_ID`: The ID number of the admission event record from the ADT master file for this patient stay.             
+* `EMERGENCY_ADMISSION_DTTM`: The date and time during the hospital encounter when the patient first received a base patient class of emergency.
+* `EMERGENCY_ADMISSION_EVENT_ID`: The ADT event record for the hospital encounter where the patient first received a base patient class of emergency.   
+* `FIRST_CHIEF_COMPLAINT_ID`: This column stores the chief complaint ID stored on line 1.
+* `FIRST_CHIEF_COMPLAINT_OTHER`: The custom reason for visit entered when the clinical system user chooses “Other” as a reason for visit on line 1.    
+* `NUM_CHIEF_COMPLAINTS_ENC`: The number of chief complaints documented on the encounter.
+* `ED_DISPOSITION_C`: The disposition of the patient when discharged from the ED.               
+* `ED_DISPOSITION_DTTM`: The date and time that the disposition was entered.
+* `ED_DISPOSITION_PAT_CONDITION_C`: The category ID of the patient condition at time of disposition in the ED. 
+* `PRIMARY_DX_ID`: The primary diagnosis ID for the encounter. This column can be used to link to CLARITY_EDG.
+* `PRIMARY_DX_LINE`: The line number associated with the primary diagnosis. This can be used with PAT_ENC_CSN_ID to link to the primary diagnosis in PAT_ENC_DX.
+* `PRIMARY_DX_ED_YN`: This column will be 'Y' if the primary diagnosis is documented as an ED diagnosis, otherwise it will be 'N'.
+* `NUM_DX_ENC`: The number of visit diagnoses documented on this encounter.             
+* `NUM_ED_DX_ENC`: The number of ED visit diagnoses documented on this encounter.
+* `ED_DEPARTURE_DTTM`: Date and time the patient left the ED.              
+* `ED_PRIMARY_CARE_AREA_ID`: The unique ID for the primary area of care for the patient during their stay in the ED.
+* `FIRST_EMERGENCY_DEPARTMENT_ID`: The unique ID of the first emergency department the patient was roomed in.  
+* `LAST_EMERGENCY_DEPARTMENT_ID`: The unique ID of the last emergency department the patient was roomed in.
+* `HOSPITAL_DISCHARGE_DATE`: The hospital discharge date for this patient contact.    
+* `HOSPITAL_DISCHARGE_DTTM`: The hospital discharge date and time for this patient contact.
+* `DISCHARGE_EVENT_ID`: The ID number of the discharge event record from the ADT master file for this patient stay.             
+* `LAST_DEPARTMENT_ID`: The ID number of the unit for the most recent location of the patient for this patient contact.
+* `ADT_SERVICE_AREA_ID`: The ID number of the service area for the most recent location of the patient for this patient contact.            
+* `DISCHARGE_DISPOSITION_C`: The category value corresponding to the discharge disposition for this patient contact.
+* `DISCHARGE_DESTINATION_C`: The category value corresponding to the discharge destination for this patient contact.        
+* `INPATIENT_PAT_ENC_CSN_ID`: The encounter CSN for an inpatient encounter within 1 hour of hospital discharge if this encounter was never inpatient (PAT_ENC_HSP.INP_ADM_DATE is null). This corresponds to the inpatient portion of a stay in discharge/readmit workflows. If this encounter was a combined ED/IP encounter, then this will be the same as the encounter CSN.
+* `PREV_HSP_PAT_ENC_CSN_ID`: The encounter CSN for the previous hospital encounter if that encounter was discharged less than 60 days ago.       
+* `PREV_HSP_ENC_ED_YN`: This column stores whether the previous encounter (whose CSN is stored in PREV_HSP_ENC_CSN_ID) was an ED encounter.
+* `PREV_HSP_ENC_INPATIENT_YN`：This column stores whether the previous encounter (whose CSN is stored in PREV_HSP_ENC_CSN_ID) was an inpatient encounter.      
+* `PREV_HSP_ENC_DATEDIFF`: This column stores the time difference in days between the arrival time of this encounter and the discharge time of the encounter whose encounter CSN is stored in PREV_HSP_ENC_CSN_ID.
+* `PREV_HSP_ENC_HOURDIFF`: This column stores the time difference in hours between the arrival time of this encounter and the discharge time of the encounter whose encounter CSN is stored in PREV_HSP_ENC_CSN_ID.           
+* `HOSPITAL_ACCOUNT_ID`: The unique ID number of the hospital account for this patient contact.
+* `PCP_AT_ENC_PROV_ID`: The unique ID of the provider record for the patient’s General Primary Care Provider as of the date of the encounter. This ID may be encrypted if you have elected to use enterprise reporting’s security utility.              
+* `FIRST_ED_ATTEND_PROV_ID`: The unique ID of the attending provider for the patient who was first assigned to the patient as an ED attending.
+* `LAST_ED_ATTEND_PROV_ID`: The unique ID of the attending provider for the patient who was last unassigned to the patient as an ED attending.         
+* `LONGEST_ED_ATTEND_PROV_ID`: The unique ID of the attending provider for the patient who had the most time assigned to the patient as an ED attending.
+* `LOA_PAT_ENC_CSN_ID`: The unique contact serial number for the contact on leave of absence when this encounter happened. This number is unique across all patient encounters in your system. If you use IntraConnect, this is the Unique Contact Identifier (UCI).             
+* `LOA_LINE`: The line number for the information associated with this LOA contact. Multiple LOAs can be associated with a contact.
+* `MEANS_OF_ARRIVAL`: The category value corresponding to the means of arrival of the patient for this patient contact.              
+* `AMBULANCE_CODE`: The category number for the ambulance code.
+* `PRIVATE_HOSP_ENC`: The category value corresponding to private encounter setting.    
+* `ACUITY`: The category value corresponding to the acuity level
+* `FIRST_CHIEF_COMPLAINT`: This column stores the chief complaint.
+* `ED_DISPOSITION`: The disposition of the patient when discharged from the ED.
+* `PRIMARY_DX`: The primary diagnosis for the encounter. This column can be used to link to CLARITY_EDG.                      
+* `ED_PRIMARY_CARE_AREA`: The primary area of care for the patient during their stay in the ED.
+* `FIRST_ED_DEPARTMENT`: First ED department patient get into.          
+* `LAST_DEPARTMENT`: Last ED department patient stayed.
+* `DISCHARGE_DISPOSITION`: The disposition of the patient when discharged from the ED.  
+* `DISCHARGE_DESTINATION`: The patient condition at time of disposition when discharged from the ED. 
+* `PCP_AT_TIME_OF_ENC`: The provider record for the patient’s General Primary Care Provider as of the date of the encounter.               
+* `FIRST_ED_ATTENDING_PROV`: The attending provider for the patient who was first assigned to the patient as an ED attending.
+* `LAST_ED_ATTENDING_PROV`: The attending provider for the patient who was last unassigned to the patient as an ED attending.         
+* `LONGEST_ED_ATTENDING_PROV`: The attending provider for the patient who had the most time assigned to the patient as an ED attending.
+* `FINANCIAL_CLASS_NAME`: Patient's financial class           
+* `PATIENT_SEX`: Patient's sex
+* `LANGUAGE`: Language Patient speaks                       
+* `ED_OR_UC_DEPARTMENT`: Department which patient get taken care of 
+* `BEHAVIORAL_DASHB`: Dummy variable. If patient is behavioral patient, then it is "1", "0" otherwise.
+
+
+
+### Patient Events
+
+
+```{r, cache = TRUE}
+events <- data.frame( "PAT_ENC_CSN_ID" = c(11111111,22222222),
+                      "ADT_ARRIVAL_DTTM" = c("2016-05-22 00:47:00", "2017-12-21 00:56:00"),
+                      "LAST_DEPARTMENT_ID" = c(928374,921234),
+                      "LINE" = c(1,2),
+                      "EVENT_TYPE" = c(58,56),
+                      "EVENT_DISPLAY_NAME" = c("Patient arrived in ED", "Triage Completed"),
+                      "EVENT_NAME" = c("Patient arrived in ED", "Triage Completed"),
+                      "EVENT_TIME" =c("01/01/2014 00:14", "01/01/2014 00:14"),
+                      "EVENT_USER_ID" = c(928374,921234),
+                      "PROV_NAME" = c("Excellent A", "Excellent B"),
+                      "PROV_TYPE" =c("Licensed Vocational Nurse","Registered Nurse"),
+                      "CLINICIAN_TITLE" =c("LVN/LPN", "RN"),
+                      "EVENT_CMT"= c("null","null"),
+                      "EVENT_DEPT_ID"=c(1010101,2020220),
+                      "DEPARTMENT_NAME"=c("EMERGENCY","EMERGENCY"),
+                      "EVENT_STATUS_C"=c("null","null"),
+                      "EVENT_STATUS_NAME"=c("null","null"))
+```
+
+```{r}
+DT::datatable(events, options = list(autoWidth = TRUE, scrollX = TRUE))
+# kable(events, "html") %>%
+#   kable_styling(bootstrap_options = c("striped", "hover", "condensed",  "bordered")) %>%
+#   kable_styling() %>%
+#   scroll_box(width = "100%", height = "150px")
+```
+
+Patients' events dataset has 17 columns and 22,429,193 observations. The file has information on:
+
+* `PAT_ENC_CSN_ID`: The serial number for the patient contact of the patient record. This number is unique across all patient contacts in the system.
+* `ADT_ARRIVAL_DTTM`: The date and time of arrival for this patient contact.
+* `LAST_DEPARTMENT_ID`: The ID number of the unit for the most recent location of the patient for this patient contact.
+* `LINE`:The line number for the information associated with this record. Multiple pieces of information can be associated with this record.
+* `EVENT_TYPE`: The associated event template for this event record. This column is frequently used to link to the ED_EVENT_TMPL_INFO table.
+* `EVENT_DISPLAY_NAME`:This column is deprecated. The column previously extracted the category title. In order to avoid data consistency issues, use EVENT_STATUS_C to link to ZC_PBA_REC_STAT instead.
+* `EVENT_NAME`: The display name of the event.
+* `EVENT_TIME`:The instant when the event occurred.
+* `EVENT_USER_ID`:The unique ID of the user who initiated the event. This column is frequently used to link to the CLARITY_EMP table.
+* `PROV_NAME`:The name associated with the provider record
+* `PROV_TYPE`: The type associated with the provider record
+* `CLINICIAN_TITLE`: title of clinicain
+* `EVENT_CMT`: The comments entered for the event.
+* `EVENT_DEPT_ID`:The unique ID of the department in which this event was fired.
+* `DEPARTMENT_NAME`: The name of the department in which this event was fired.
+* `EVENT_STATUS_C`:The category number for the event's status.
+* `EVENT_STATUS_NAME`: The name for the event's status. 
+
+
+
+
+### Administration Location
+    
+```{r}
+adtLocation <- data.frame("PAT_ENC_CSN_ID" = c(11111111,22222222),
+                          "ADT_ARRIVAL_DTTM" = c("2016-05-22 00:47:00", "2017-12-21 00:56:00"),   
+                          "LAST_DEPARTMENT_ID" = c(928374,921234),
+                          "EVENT_TYPE_C"   = c(1,3),     
+                          "EVENT" =c("Admission", "Transfer in"),              
+                          "IN_DTTM" = c("01/01/2014 00:18", "01/01/2014 00:43"), 
+                          "OUT_DTTM" = c("01/01/2014 00:43", "01/01/2014 03:43"),        
+                          "ADT_DEPARTMENT_NM_WID" =c("ED 202020","ED 202020"),
+                          "ADT_ROOM_ID" =c(928374,921234),
+                          "ADT_ROOM_NM_WID" =c("A-RMA [343]","08-Y [332]" ),
+                          "ADT_BED_LABEL_WID"=c("A- Y [939]", "08-Y [928]"))
+
+```
+
+```{r}
+DT::datatable(adtLocation, options = list(autoWidth = TRUE, scrollX = TRUE))
+# kable(adtLocation, "html") %>%
+#   kable_styling(bootstrap_options = c("striped", "hover", "condensed",  "bordered")) %>%
+#   kable_styling() %>%
+#   scroll_box(width = "100%", height = "150px")
+```
+
+AD_Location dataset has 11 columns and 1,849,759 observations. The information extracted contains:
+
+* `PAT_ENC_CSN_ID`: The serial number for the patient contact of the patient record. This number is unique across all patient contacts in the system.
+* `ADT_ARRIVAL_DTTM`: The date and time of arrival for this patient contact.
+* `LAST_DEPARTMENT_ID`: The ID number of the unit for the most recent location of the patient for this patient contact.
+* `EVENT_TYPE_C`:The category value corresponding to the type of the event record.
+* `EVENT`:The ADT event record.
+* `IN_DTTM`:The instant when the patient was moved to the department/room/bed.
+* `OUT_DTTM`:The instant when the patient was moved out of the department/room/bed. If the patient is still in the department/room/bed, this column will return the current instant. The column PAT_OUT_DTTM will return the instant when the patient was moved out of the department/room/bed, but will return nothing if the patient is still in the department/room/bed.
+* `ADT_DEPARTMENT_NM_WID`:A unique department identifier that consists of the name and the department ID. This column is often used for grouping, sorting and display purposes in reports.
+* `ADT_ROOM_ID`:The ID number of the room of the event record during the effective time span.
+* `ADT_ROOM_NM_WID`:A unique room identifier that consists of the name and the room ID. This column is often used for grouping, sorting and display purposes in reports.
+* `ADT_BED_LABEL_WID`:A unique bed identifier that consists of the name and the bed ID. This column is often used for grouping, sorting and display purposes in reports.
+
+
+### Chief Complaint
+
+
+```{r}
+chiefComplaint <- data.frame("PAT_ENC_CSN_ID" = c(11111111,22222222),
+                             "ADT_ARRIVAL_DTTM" = c("2016-05-22 00:47:00", "2017-12-21 00:56:00"), 
+                             "LAST_DEPARTMENT_ID" = c(928374,921234), 
+                             "LINE" = c(1,2),
+                             "REASON_VISIT_NAME" =c("FEVER","DIFFICULTY BREATHING"),
+                             "BEHAVIORAL_DASHB" =c(0,0),  
+                             "ENC_REASON_OTHER" =c("null","null"),
+                             "COMMENTS"=c("X 2 DAYS","ONSET TODAY"))
+```
+
+```{r}
+DT::datatable(chiefComplaint, options = list(autoWidth = TRUE, scrollX = TRUE))
+# kable(chiefComplaint, "html") %>%
+#   kable_styling(bootstrap_options = c("striped", "hover", "condensed",  "bordered")) %>%
+#   kable_styling() %>%
+#   scroll_box(width = "100%", height = "150px")
+```
+
+Chief Complaint dataset has `r ncol(chiefComplaint)` columns and `r nrow(chiefComplaint)` observations. The information extracted contains:
+
+* `PAT_ENC_CSN_ID`: The serial number for the patient contact of the patient record. This number is unique across all patient contacts in the system.
+* `ADT_ARRIVAL_DTTM`: The date and time of arrival for this patient contact.
+* `LAST_DEPARTMENT_ID`: The ID number of the unit for the most recent location of the patient for this patient contact.
+* `LINE`:The line number for the information associated with this record. Multiple pieces of information can be associated with this record.
+* `REASON_VISIT_NAME`: Reason of Visit
+* `BEHAVIORAL_DASHB`: Behavioral patient = "1", "0" otherwise
+* `ENC_REASON_OTHER`: other reasons
+* `COMMENTS`: commnets for the patient
+
+### Patient Diagnoses
+
+```{r}
+diagnose <- data.frame("PAT_ENC_CSN_ID" = c(11111111,22222222),
+                       "ADT_ARRIVAL_DTTM" = c("2016-05-22 00:47:00", "2017-12-21 00:56:00"), 
+                       "LAST_DEPARTMENT_ID" = c(928374,921234),
+                       "PRIMARY_DX_YN"  = c("Y","Y") ,
+                       "LINE" = c(1,2),
+                       "REASON_VISIT_NAME" =c("FEVER","DIFFICULTY BREATHING"),
+                       "BEHAVIORAL_DASHB" =c(0,0),  
+                       "DX_NAME" =c("Wheezing","Upper respiratory infection"),
+                       "CURRENT_ICD10_LIST"=c("R06.2","J06.9"))
+```
+
+```{r}
+DT::datatable(diagnose, options = list(autoWidth = TRUE, scrollX = TRUE))
+# kable(diagnose, "html") %>%
+#   kable_styling(bootstrap_options = c("striped", "hover", "condensed",  "bordered")) %>%
+#   kable_styling() %>%
+#   scroll_box(width = "100%", height = "150px")
+```
+
+Patient Diagnoses dataset has 8 columns and 1,218,775 observations. The information extracted contains:
+
+
+* `PAT_ENC_CSN_ID`: The serial number for the patient contact of the patient record. This number is unique across all patient contacts in the system.
+* `ADT_ARRIVAL_DTTM`: The date and time of arrival for this patient contact.
+* `LAST_DEPARTMENT_ID`: The ID number of the unit for the most recent location of the patient for this patient contact.
+* `PRIMARY_DX_YN
+* `LINE`:The line number for the information associated with this record. Multiple pieces of information can be associated with this record.
+* `BEHAVIORAL_JASON`: Behavioral patient = "1", "0" otherwise
+* `DX_NAME`: Name of Diagnoses
+* `CURRENT_ICD10_LIST`: Current ICD list

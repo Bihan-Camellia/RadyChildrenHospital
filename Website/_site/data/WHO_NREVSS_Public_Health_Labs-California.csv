@@ -1,0 +1,5 @@
+"*Beginning for the 2015-16 season, reports from public health and clinical laboratories are presented separately in the weekly influenza update, FluView.  Data presented from public health laboratories include the weekly total number of specimens tested, the number of positive influenza tests, and the number by influenza virus type, subtype, and influenza B lineage."
+REGION TYPE,REGION,SEASON_DESCRIPTION,TOTAL SPECIMENS,A (2009 H1N1),A (H3),A (Subtyping not Performed),B,BVic,BYam,H3N2v
+States,California,Season 2015-16,12239,1394,825,28,678,309,803,0
+States,California,Season 2016-17,14047,184,4695,120,116,28,151,0
+States,California,Season 2017-18,14047,567,4513,306,854,250,1003,0

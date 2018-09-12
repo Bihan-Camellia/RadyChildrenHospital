@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Linping, Bihan, Xuehan, Feiyang, Derrick" />
+
+
+<title>Rady Children’s Hospital</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/ionicons-2.0.1/css/ionicons.min.css" rel="stylesheet" />
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">RCH capstone</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    HomepPage
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-database"></span>
+     
+    Data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="weather.html">
+        <span class="fa fa-cloud"></span>
+         
+        Weather
+      </a>
+    </li>
+    <li>
+      <a href="Nation_Cal_flu.html">
+        <span class="ion ion-stats-bars"></span>
+         
+        Flu Overview
+      </a>
+    </li>
+    <li>
+      <a href="SdCounty.html">
+        <span class="ion ion-medkit"></span>
+         
+        SD Flu
+      </a>
+    </li>
+    <li>
+      <a href="Vacation_time_data.html">
+        <span class="ion ion-calendar"></span>
+         
+        Vacation Schedule
+      </a>
+    </li>
+    <li>
+      <a href="RCH_Data.html">
+        <span class="fa fa-table"></span>
+         
+        RCH Data
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="ion ion-edit"></span>
+     
+    Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="flowDiagram.html">
+        <span class="fa fa-stack-overflow"></span>
+         
+        Flow Diagram
+      </a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-modx"></span>
+     
+    Model
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="model.html">
+        <span class="ion ion-laptop"></span>
+         
+        Current Model
+      </a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Rady Children’s Hospital</h1>
+<h4 class="author"><em>Linping, Bihan, Xuehan, Feiyang, Derrick</em></h4>
+
+</div>
+
+
+<div id="section" class="section level2 tabset">
+<h2></h2>
+<div id="objectives" class="section level3">
+<h3>Objectives</h3>
+<p>RCH Capstone Project Objectives (Ordered by Importance):</p>
+<ul>
+<li>Create a more effective method for setting future staffing schedules for both physicians and nurses in ED department.</li>
+<li>Build a predictive model to project patient volume as a decision support tool for individuals who are responsible for creating nurse and physician staffing schedules.</li>
+<li>Assess important factors which contribute to efficient staff scheduling in the Emergency Department environment where patients do not schedule appointments</li>
+</ul>
+<!-- ![](https://scontent-lax3-1.xx.fbcdn.net/v/t1.0-1/p200x200/11225431_10153694957372604_5339377151542495359_n.jpg?_nc_cat=0&oh=f3be0e4ef383a8078a7e3ef536cd4235&oe=5B9B67EF) -->
+<br> <br> <br> <br> <br> <br>
+<p>
+<img class="image" src="https://scontent-lax3-1.xx.fbcdn.net/v/t1.0-1/p200x200/11225431_10153694957372604_5339377151542495359_n.jpg?_nc_cat=0&oh=f3be0e4ef383a8078a7e3ef536cd4235&oe=5B9B67EF" align="right">
+</p>
+</div>
+<div id="team-member" class="section level3">
+<h3>Team Member</h3>
+<br> <br>
+<div align="center">
+<p><a href="https://www.linkedin.com/in/derrickbuntin/"> <img class="image-circle" src="https://media.licdn.com/dms/image/C4E03AQGG6Ktl_3gHMw/profile-displayphoto-shrink_800_800/0?e=1531353600&v=beta&t=eXAA-XwODlQETbRHHZEnQAc8GEHO6QkTdr2w1WqsEuQ"> Derrick Buntin </a> <a href="https://www.linkedin.com/in/emilyzhang94/"> <img class="image-circle" src="https://media.licdn.com/dms/image/C5103AQGVM1FvTtVLpg/profile-displayphoto-shrink_800_800/0?e=1531353600&v=beta&t=MQItFgyB-X_egrE-qe-det5fPMZitrsv5Jq6O5VRmEs"> Xuehan Zhang </a></p>
+</div>
+<br> <br>
+<div align="center">
+<p><a href="https://www.linkedin.com/in/chenfeiyang/"> <img class="image-circle" src="https://media.licdn.com/dms/image/C5603AQFBs5a9L6wDTg/profile-displayphoto-shrink_800_800/0?e=1531353600&v=beta&t=m6gztERkC3EUCBRJPqBNbETivMxTR4bzStgAIOpDCyc"> Feiyang Chen </a> <a href="https://www.linkedin.com/in/linpingyu/"> <img class="image-circle" src="https://media.licdn.com/dms/image/C5103AQFMRXlhRr2m-w/profile-displayphoto-shrink_800_800/0?e=1531353600&v=beta&t=rTCn7hKVFE9hOFgZZ4ggBKXRn-v_w4fmXcoQtjsyhg8"> Linping Yu </a> <a href="https://www.linkedin.com/in/bihan-zhu-camellia"> <img class="image-circle" src="https://media.licdn.com/dms/image/C4D03AQHSu5Hh9Gsw5g/profile-displayphoto-shrink_200_200/0?e=1531353600&v=beta&t=qlcLmdpZg9CFD6dMtPJAvq0pqK8edTvCQhpzPBd7V68"> Bihan Zhu </a></p>
+</div>
+</div>
+<div id="rch-basic-information" class="section level3">
+<h3>RCH Basic Information</h3>
+<div class="figure">
+<img src="https://static1.squarespace.com/static/5452a24de4b08d8bd358b4c4/54823618e4b03340a7c392cf/54823a99e4b023c624060ef4/1417820826845/RadyExteriorBuilding_1.jpg?format=1000w" />
+
+</div>
+<p><br></p>
+<p>Rady Children’s Hospital San Diego(RCHSD) is the largest children’s hospital in California, the <strong>6<sup>th</sup> largest</strong> in the country, and is recognized by US News &amp; World Report as <strong>one of the best children’s hospital in the country</strong>.</p>
+<p>RCHSD serves over 90% of the regional pediatric population and has evolved into a prominent integrated delivery system inclusive of home health services, skilled nursing facility services, behavioral health services, developmental services, physician management services, and affiliation with several physician groups including Children’s Primary Care Medical Group and Rady Children’s Medical Practice Foundation.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

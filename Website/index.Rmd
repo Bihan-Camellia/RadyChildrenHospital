@@ -1,0 +1,85 @@
+---
+title: "Rady Children’s Hospital"
+author: "Linping, Bihan, Xuehan, Feiyang, Derrick"
+output: 
+  html_document:
+   theme: flatly
+   highlight: tango
+   code_folding: hide
+   css: style.css
+---
+
+
+```{r setup, include = FALSE}
+library(radiant)
+# options(scipen = 100, width = 250)
+knitr::opts_chunk$set(
+  echo = FALSE, warning = FALSE,
+  message = FALSE, fig.width = 16, fig.height = 9
+)
+library("DiagrammeR")
+```
+
+## {.tabset}
+
+### Objectives
+
+RCH Capstone Project Objectives (Ordered by Importance):
+
+* Create a more effective method for setting future staffing schedules for both physicians and nurses in ED department.
+* Build a predictive model to project patient volume as a decision support tool for individuals who are responsible for creating nurse and physician staffing schedules. 
+* Assess important factors which contribute to efficient staff scheduling in the Emergency Department environment where patients do not schedule appointments
+
+
+<!-- ![](https://scontent-lax3-1.xx.fbcdn.net/v/t1.0-1/p200x200/11225431_10153694957372604_5339377151542495359_n.jpg?_nc_cat=0&oh=f3be0e4ef383a8078a7e3ef536cd4235&oe=5B9B67EF) -->
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<p><img class="image" src="https://scontent-lax3-1.xx.fbcdn.net/v/t1.0-1/p200x200/11225431_10153694957372604_5339377151542495359_n.jpg?_nc_cat=0&oh=f3be0e4ef383a8078a7e3ef536cd4235&oe=5B9B67EF" align="right"></p>
+
+
+
+### Team Member
+
+<br>
+<br>
+<div align="center">
+  <a href="https://www.linkedin.com/in/derrickbuntin/">
+    <img class="image-circle" src="https://media.licdn.com/dms/image/C4E03AQGG6Ktl_3gHMw/profile-displayphoto-shrink_800_800/0?e=1531353600&v=beta&t=eXAA-XwODlQETbRHHZEnQAc8GEHO6QkTdr2w1WqsEuQ">
+    Derrick Buntin
+  </a>
+  <a href="https://www.linkedin.com/in/emilyzhang94/">
+    <img class="image-circle" src="https://media.licdn.com/dms/image/C5103AQGVM1FvTtVLpg/profile-displayphoto-shrink_800_800/0?e=1531353600&v=beta&t=MQItFgyB-X_egrE-qe-det5fPMZitrsv5Jq6O5VRmEs">
+    Xuehan Zhang
+  </a>
+</div>
+<br>
+<br>
+<div align="center">
+  <a href="https://www.linkedin.com/in/chenfeiyang/">
+    <img class="image-circle" src="https://media.licdn.com/dms/image/C5603AQFBs5a9L6wDTg/profile-displayphoto-shrink_800_800/0?e=1531353600&v=beta&t=m6gztERkC3EUCBRJPqBNbETivMxTR4bzStgAIOpDCyc">
+    Feiyang Chen
+  </a>
+  <a href="https://www.linkedin.com/in/linpingyu/">
+    <img class="image-circle" src="https://media.licdn.com/dms/image/C5103AQFMRXlhRr2m-w/profile-displayphoto-shrink_800_800/0?e=1531353600&v=beta&t=rTCn7hKVFE9hOFgZZ4ggBKXRn-v_w4fmXcoQtjsyhg8">
+    Linping Yu
+  </a>
+  <a href="https://www.linkedin.com/in/bihan-zhu-camellia">
+    <img class="image-circle" src="https://media.licdn.com/dms/image/C4D03AQHSu5Hh9Gsw5g/profile-displayphoto-shrink_200_200/0?e=1531353600&v=beta&t=qlcLmdpZg9CFD6dMtPJAvq0pqK8edTvCQhpzPBd7V68">
+    Bihan Zhu
+  </a>
+</div>
+
+
+### RCH Basic Information
+
+![](https://static1.squarespace.com/static/5452a24de4b08d8bd358b4c4/54823618e4b03340a7c392cf/54823a99e4b023c624060ef4/1417820826845/RadyExteriorBuilding_1.jpg?format=1000w)
+
+<br>
+
+Rady Children's Hospital San Diego(RCHSD) is the largest children's hospital in California, the **6^th^ largest** in the country, and is recognized by US News & World Report as **one of the best children's hospital in the country**. 
+
+RCHSD serves over 90% of the regional pediatric population and has evolved into a prominent integrated delivery system inclusive of home health services, skilled nursing facility services, behavioral health services, developmental services, physician management services, and affiliation with several physician groups including Children's Primary Care Medical Group and Rady Children's Medical Practice Foundation.

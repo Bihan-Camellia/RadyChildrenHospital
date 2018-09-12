@@ -1,0 +1,168 @@
+---
+title: "National and State Flu"
+output: 
+  html_document:
+   theme: flatly
+   highlight: tango
+   code_folding: hide
+---
+
+<style>
+pre {
+  width: 560px;
+  white-space: pre;
+  word-wrap: normal;
+  background-color: #ffffff;
+}
+</style>
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(radiant)
+# options(scipen = 100, width = 250)
+knitr::opts_chunk$set(
+  echo = FALSE, warning = FALSE,
+  message = FALSE, comment = NA,
+  fig.width = 16, fig.height = 9, fig.align = 'center'
+)
+```
+
+
+For more detailed influenza cases report, please go to [https://www.cdc.gov/flu/weekly/](https://www.cdc.gov/flu/weekly/)
+
+```{r include=FALSE}
+col <- c('regionType','region','year','week','%weightedILI','%unweightedILI',
+         'age0-4','age25-49','age25-64','age5-24','age50-64','age65','ILItotal',
+         'numOfProviders','totalPatients')
+
+ILINet_Cal <- read_csv('data/ILINet-California.csv', skip = 2, col_names = col)
+ILINet_Nat <- read_csv('data/ILINet-National.csv', skip = 2, col_names = col)
+ILI_join <- bind_rows(ILINet_Cal %>% select(regionType, year, week, ILItotal, totalPatients), 
+                      ILINet_Nat %>% select(regionType, year, week, ILItotal, totalPatients)) %>% 
+  mutate(year = factor(year),
+         perc = ILItotal / totalPatients)
+```
+
+
+## Year 2014 - 2017, Influenza Like Illness(ILI) {.tabset}
+
+### 2014-2017 ILI total
+
+```{r}
+ggplot(ILI_join %>% filter(year %in% c(2014, 2015, 2016, 2017)), 
+       aes(x = week, y = ILItotal, color = year)) +
+  geom_point(alpha = 0.2, size = 1) +
+  geom_line() +
+  facet_grid(regionType~., scales = 'free_y') +
+  theme_bw() +
+  ggtitle("2014-2017 influenza like illness total", subtitle = 'Source: CDC') +
+  labs(y='Total Number of ILI patients', x='Week') +
+  # scale_color_brewer(palette = 'Set2') +
+  scale_x_continuous(limits=c(1, 53), breaks = seq(1,53,4)) +
+  theme(panel.grid.minor = element_blank(),
+        legend.position = 'bottom',
+        panel.border = element_blank())
+```
+
+### 2014-2017 Percentage of having ILI
+
+```{r}
+ggplot(ILI_join %>% filter(year %in% c(2014, 2015, 2016, 2017, 2018)), 
+       aes(x = week, y = perc, color = year)) +
+  geom_point(alpha = 0.2, size = 1) +
+  geom_line() +
+  facet_grid(regionType~., scales = 'free_y') +
+  theme_bw() +
+  ggtitle('2014-2017 percentage of ILI', subtitle = 'Source: CDC') +
+  labs(y='Percentage of ILI patients', x='Week') +
+  # scale_color_brewer(palette = 'Set2') +
+  scale_x_continuous(limits=c(1, 53), breaks = seq(1,53,4)) +
+  theme(panel.grid.minor = element_blank(),
+        legend.position = 'bottom',
+        panel.border = element_blank())
+```
+
+##
+
+From the two charts above, a clear pattern can be observed. Normally, the number of ILI reported starts to increase at around week 40, and decrease at week 6 or 7. The peak value of each year varies but will normally in late December or early January. Year 2017 was off across the nation, the flu spreaded too fast, and the ILI reported surpassed 2016/2017 season's peak in the thrid week of December and then reached a historical high in the next week. California's condition was even worse than the nation, the number of ILI almost double compare to the same time in the last three year. 
+
+The following two graphs will verify the inference made above.
+
+## Year 2014-2017 Clinical Detection
+
+```{r include=FALSE}
+col = c('regionType', 'region', 'year', 'week', 'totalSpecimens', 'totalA', 'totalB', 'percentPositive', 'percentA', 'percentB')
+
+clinical_cal_15_18 <- read_csv('data/WHO_NREVSS_Clinical_Labs-California.csv', skip = 2, col_names = col)
+clinical_cal_12_15 <- read_csv('data/WHO_NREVSS_Combined_prior_to_2015_16-California.csv', skip = 1) %>% 
+  mutate(totalA = `A (2009 H1N1)`+`A (H1)`+`A (H3)`+`A (Subtyping not Performed)`+`A (Unable to Subtype)`,
+         percentA = totalA / `TOTAL SPECIMENS`,
+         percentB = B / `TOTAL SPECIMENS`) %>% 
+  select(`REGION TYPE`, REGION, YEAR, WEEK, `TOTAL SPECIMENS`, totalA, B, `PERCENT POSITIVE`, percentA, percentB)
+colnames(clinical_cal_12_15) <- col
+
+clinical_nation_15_18 <- read_csv('data/WHO_NREVSS_Clinical_Labs-National.csv', skip = 2, col_names = col)
+clinical_nation_12_15 <- read_csv('data/WHO_NREVSS_Combined_prior_to_2015_16-National.csv', skip = 1) %>% 
+  mutate(totalA = `A (2009 H1N1)`+`A (H1)`+`A (H3)`+`A (Subtyping not Performed)`+`A (Unable to Subtype)`,
+         percentA = totalA / `TOTAL SPECIMENS`,
+         percentB = B / `TOTAL SPECIMENS`) %>% 
+  select(`REGION TYPE`, REGION, YEAR, WEEK, `TOTAL SPECIMENS`, totalA, B, `PERCENT POSITIVE`, percentA, percentB)
+colnames(clinical_nation_12_15) <- col
+
+clinical_join <- bind_rows(clinical_cal_15_18, 
+                           clinical_cal_12_15, 
+                           clinical_nation_15_18, 
+                           clinical_nation_12_15) %>%
+  mutate(year = factor(year))
+```
+
+### 2014-2017 Percentage of Test Positive
+
+This graph demostrates the percentage of clinical test result of being flu-positive across different weeks of the past 5 years.
+
+```{r}
+ggplot(clinical_join %>% filter(year %in% c(2014, 2015, 2016, 2017, 2018)), 
+       aes(x = week, y = percentPositive, color = year)) +
+  geom_point(alpha = 0.2, size = 1) +
+  geom_line() +
+  facet_grid(regionType~., scales = 'free_y') +
+  theme_bw() +
+  ggtitle('2014-2017 percentage of Positive', subtitle = 'Source: CDC') +
+  labs(y='Percentage of positive', x='Week') +
+  # scale_color_brewer(palette = 'Set2') +
+  scale_x_continuous(limits=c(1, 53), breaks = seq(1,53,4)) +
+  theme(panel.grid.minor = element_blank(),
+        legend.position = 'bottom',
+        panel.border = element_blank())
+```
+
+## Weekly Influenza Activity Estimates
+
+### 2014-2017 Week40-Week20 California Influenza Activity Map
+
+```{r include=FALSE}
+col = c('region', 'url', 'website', 'activityEstimate', 'weekend', 'week', 'season')
+fluView <- read_csv('data/FluViewPhase8_Season57-56-55-54-53_Data.csv', skip = 1, col_names = col) %>% 
+  mutate(region = tolower(region))
+states <- map_data('state')
+```
+
+This graph showed the avtivity estimates of California state. The darker the color, the more severe flu spreaded.
+
+```{r}
+Total <- states %>% left_join(fluView, by = 'region') %>% 
+  filter(region == 'california') %>% 
+  mutate(week = factor(week, levels = c(seq(40, 53), seq(1:39))),
+         activityEstimate = factor(activityEstimate, levels = c('Sporadic', 'Local Activity', 'Regional', 'Widespread')))
+ggplot(Total) +
+  geom_polygon(aes(x = long, y = lat, fill = activityEstimate, group = group)) +
+  facet_grid(season~week) +
+  theme_bw() +
+  scale_fill_brewer(palette = 'OrRd', direction = 1) +
+  labs(x = NULL, y = NULL) +
+  theme(axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        legend.position = 'bottom',
+        panel.border = element_blank())
+```

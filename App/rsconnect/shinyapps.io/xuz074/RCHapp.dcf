@@ -1,0 +1,13 @@
+name: RCHapp
+title: RCHapp
+username:
+account: xuz074
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 379443
+bundleId: 1477716
+url: https://xuz074.shinyapps.io/RCHapp/
+when: 1531418596.58709
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: launch_app.R

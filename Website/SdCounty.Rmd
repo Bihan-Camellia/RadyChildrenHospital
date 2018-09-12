@@ -1,0 +1,142 @@
+---
+title: "Sand Diego County Flu"
+output: 
+  html_document:
+   theme: flatly
+   highlight: tango
+   code_folding: hide
+---
+
+<style>
+pre {
+  width: 560px;
+  white-space: pre;
+  word-wrap: normal;
+  background-color: #ffffff;
+}
+</style>
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(radiant)
+library(DT)
+# options(scipen = 100, width = 250)
+knitr::opts_chunk$set(
+  echo = FALSE, warning = FALSE,
+  message = FALSE, comment = NA,
+  fig.width = 16, fig.height = 9, fig.align = 'center'
+)
+```
+
+```{r include=FALSE}
+
+sdcounty <- readxl::read_xlsx("data/Flu Cases by Episode Week County of San Diego 04182018.xlsx",col_names = TRUE)
+names(sdcounty) <- sdcounty[1,]
+colnames(sdcounty)[colnames(sdcounty) == 'Season'] <- "Week"
+sdcounty <- sdcounty[3:55,] 
+gathered <- gather(sdcounty,Season,value=influenza,-Week)
+gathered$Week <- as.integer(gathered$Week)
+gathered$influenza <- as.numeric(gathered$influenza)
+gathered$Year <- c(rep(2017,27),rep(2018,26),rep(2016,27),rep(2017,26),rep(2015,27),rep(2016,26),rep(2014,27),rep(2015,26),rep(2013,27),rep(2014,26),rep(2012,27),rep(2013,26),rep(2011,27),rep(2012,26),rep(2010,27),rep(2011,26),rep(2009,27),rep(2010,26),rep(2008,27),rep(2009,26),rep(2007,27),rep(2008,26),rep(2006,27),rep(2007,26),rep(2005,27),rep(2006,26),rep(2004,27),rep(2005,26),rep(2003,27),rep(2004,26))
+recentsixyears <- gathered %>% 
+  filter(Year %in%  c("2018","2017","2016","2015","2014","2013","2012"))
+```
+
+## {.tabset}
+
+### General Introduction
+
+The San Diego Flu Cases dataset is prepared by Epidemiology and Immunization Services Branch on Apr.18, 2018. It records the number of influenza cases reported every week from 2003-2017. This data will help us predict weekly epidemic situation and thus predict the weekly demand of Rady Children's Hospital.
+
+For more detailed influenza cases report, please go to https://www.sandiegocounty.gov/content/sdc/hhsa/programs/phs/community_epidemiology/disease-surveillance.html.
+
+The County's influenza surveillance program is a collaborative effort between San Diego County Public Health Services' Epidemiology & Immunization Services Branch, our medical community and laboratory partners, and the [San Diego Health Connect](http://sdhealthconnect.org/) Health Information Exchange.
+
+Contact us at EpiDiv.HHSA@sdcounty.ca.gov or (619)692-8499 with any questions. Thank you for your interest.
+
+```{r}
+DT::datatable(sdcounty, options = list(scrollX = TRUE, autoWidth = TRUE))
+```
+
+* Cases are grouped by CDC Week using Episode Date, which is the date of onset, or the earliest date in which the case is identified.
+
+### Recent Six Year's Trend
+
+```{r warning=FALSE}
+ggplot(recentsixyears,mapping = aes(x=as.numeric(Week),y=influenza,color=as.factor(Year)))+
+  geom_point(show.legend = FALSE)+
+  geom_line(show.legend = FALSE)+
+  facet_grid(Year~.)+
+  ggtitle("Trend of Number of Inflenza Cases in Recent Six Years") +
+  labs(x = 'Week', y = 'Influenza') +
+  theme_bw() +
+  theme(panel.grid.major = element_blank()) +
+  scale_x_continuous(breaks = seq(1,53,4))
+  # scale_color_brewer(palette = 'Set2')
+```
+The time period that flu comes has changed during the past six years. That change might be used in the time-series model.
+
+### Flu Outbreak in Season 2017/2018
+
+```{r include=FALSE}
+result <- pivotr(
+  gathered, 
+  cvars = "Year", 
+  nvar = "influenza", 
+  fun = "max_rm", 
+  nr = 15
+)
+summary(result)
+# dtab(result, pageLength = -1) %>% render()
+maxvalue <- result$tab; register("maxvalue")
+```
+
+```{r}
+visualize(
+  maxvalue, 
+  xvar = "Year", 
+  yvar = "influenza", 
+  type = "bar", 
+  fill = "Year", 
+  custom = TRUE
+)+
+  geom_text(aes(x = Year, y = influenza, label = round(influenza, 2)), vjust = -1) +
+  labs(title = 'Mean Number of Influenza Cases, County of San Diego',y = "Max Number of Inluenza Cases", x = "Year") + 
+  theme_bw() +
+  # scale_fill_brewer(palette = 'Set2') +
+  theme(panel.grid.major = element_blank(),
+        legend.position = "none")
+```
+
+
+```{r include=FALSE}
+result <- pivotr(
+  gathered, 
+  cvars = "Year", 
+  nvar = "influenza", 
+  data_filter = "Year != 2018", 
+  nr = 15
+)
+summary(result)
+# dtab(result, pageLength = -1) %>% render()
+meanvalue <- result$tab; register("meanvalue")
+```
+
+```{r}
+visualize(
+  meanvalue, 
+  xvar = "Year", 
+  yvar = "influenza", 
+  type = "bar", 
+  fill = "Year", 
+  custom = TRUE
+)+
+  geom_text(aes(x = Year, y = influenza, label = round(influenza, 2)), vjust = -1) +
+  labs(title = 'Mean Number of Influenza Cases, County of San Diego',y = "Mean Number of Inluenza Cases", x = "Year") + 
+  theme_bw() +
+  # scale_fill_brewer(palette = 'Set2') +
+  theme(panel.grid.major = element_blank(),
+        legend.position = "none")
+```
+
+

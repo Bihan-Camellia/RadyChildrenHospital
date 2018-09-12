@@ -1,0 +1,21 @@
+---
+title: "Current Model"
+output: 
+  html_document:
+   theme: flatly
+   highlight: tango
+   code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+[Link to current model breakdown](modelRecreation.html)
+
+This page is not built by this website project. The raw data used in the html is on the server provided by RCH so the webpage is not reproducible locally. But we still think it is useful to include for detailed information about the project. 
+
+You can click the link in the top of the [**Current Model**](modelRecreation.html) page to return to this page.
+
+Unfortunately, the theme and layout are not matched with the website.
